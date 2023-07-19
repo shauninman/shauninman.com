@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Pokemon Gold/Silver Time Reset</title>
+<meta name="viewport" content="width=180">
+<script type="text/javascript">
+console.log('---');
+	
+// logic via: http://www.gamefaqs.com/gbc/446340-pokemon-silver-version/faqs/12550
+// and http://upokecenter.dreamhosters.com/articles/pokemon-video-games/pokemon-gold-and-silver/changing-the-time-in-pokemon-gold-and-silver/#How_the_Game_Calculates_the_Password
+
+function $(id) {
+	return document.getElementById(id);
+}
+
+function generatePassword() {
+
+	var name = $('trainer').value;
+	var id = $('idno').value;
+	var money = $('money').value;
+
+	// constants
+	var chars = {};
+	chars[' '] = 127;
+	chars['A'] = 128;
+	chars['B'] = 129;
+	chars['C'] = 130;
+	chars['D'] = 131;
+	chars['E'] = 132;
+	chars['F'] = 133;
+	chars['G'] = 134;
+	chars['H'] = 135;
+	chars['I'] = 136;
+	chars['J'] = 137;
+	chars['K'] = 138;
+	chars['L'] = 139;
+	chars['M'] = 140;
+	chars['N'] = 141;
+	chars['O'] = 142;
+	chars['P'] = 143;
+	chars['Q'] = 144;
+	chars['R'] = 145;
+	chars['S'] = 146;
+	chars['T'] = 147;
+	chars['U'] = 148;
+	chars['V'] = 149;
+	chars['W'] = 150;
+	chars['X'] = 151;
+	chars['Y'] = 152;
+	chars['Z'] = 153;
+	chars['a'] = 160;
+	chars['b'] = 161;
+	chars['c'] = 162;
+	chars['d'] = 163;
+	chars['e'] = 164;
+	chars['f'] = 165;
+	chars['g'] = 166;
+	chars['h'] = 167;
+	chars['i'] = 168;
+	chars['j'] = 169;
+	chars['k'] = 170;
+	chars['l'] = 171;
+	chars['m'] = 172;
+	chars['n'] = 173;
+	chars['o'] = 174;
+	chars['p'] = 175;
+	chars['q'] = 176;
+	chars['r'] = 177;
+	chars['s'] = 178;
+	chars['t'] = 179;
+	chars['u'] = 180;
+	chars['v'] = 181;
+	chars['w'] = 182;
+	chars['x'] = 183;
+	chars['y'] = 184;
+	chars['z'] = 185;
+	chars['-'] = 227;
+	chars['?'] = 230;
+	chars['/'] = 243;
+	chars['.'] = 232;
+	chars[','] = 244;
+	chars['('] = 154;
+	chars[')'] = 155;
+	chars[':'] = 156;
+	chars[';'] = 157;
+	chars['['] = 158;
+	chars[']'] = 159;
+	chars['@'] = 225;
+	chars['#'] = 226;
+	chars['!'] = 231;
+	chars['*'] = 241;
+
+	// @ = PK
+	// # = MN
+
+	id = parseInt(id)
+	money = parseInt(money)
+	
+	if (isNaN(id)) id = 0;
+	if (isNaN(money)) money = 0;
+
+	console.log(name, id, money);
+
+	var r1 = 0;
+	var len = name.length;
+	len = len>5?5:len;
+	for (var i=0; i<len; i++) {
+		var c = name.charAt(i);
+		console.log(c, chars[c]);
+		r1 += chars[c];
+	}
+	console.log('r1', r1);
+
+
+	while (money > 65535) {
+		money -= 65535
+	}
+	var r2 = Math.floor(money/256) + (money%256);
+	console.log('r2', r2);
+
+	while (id > 65535) {
+		id -= 65535
+	}
+	var r3 = Math.floor(id/256) + (id%256);
+	console.log('r3', r3);
+
+	var r = r1 + r2 + r3;
+	var password = ('00000'+r).slice(-5);
+	console.log('password', password);
+
+	$('password').value = password;
+}
+
+</script>
+<style>
+body,input{
+	font-family: monospace;
+}
+label {
+	display: block;
+}
+</style>
+</head>
+<body>
+<p><strong>Time Reset</strong><br>Down + Select + B</p>
+<form onsubmit="generatePassword(); return false;">
+	<label><em>NAME/</em><br><input type="text" id="trainer" maxlength="5" value="GAMEB" /></label>
+	<label><em>IDno.</em><br><input type="number" id="idno" value="40914" /></label>
+	<label><em>MONEY</em><br><input type="number" id="money" /></label>
+	<input type="submit" value="GENERATE" />
+	<p><label><strong>PASSWORD</strong><br><input type="text" readonly id="password" /></label></p>
+</form>
+</form>
+</body>
+</html>

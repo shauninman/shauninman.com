@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Al Bhed Translator</title>
+<script type="text/javascript" language="javascript">
+// <![CDATA[
+
+// E muja sa cusa Macmea.
+var eng = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+var alb = 'ypltavkrezgmshubxncdijfqowYPLTAVKREZGMSHUBXNCDIJFQOW';
+
+var loan_words = [
+	'Al Bhed',
+	'Final Fantasy X',
+	'Spira',
+	'fiend',
+	'magic',
+	'aeon',
+	'airship',
+	'Sin',
+	
+	// Did you know that the Astral language in Ratcheteer was inspired by Al Bhed from Final Fantasy X?
+	'Astral',
+	'Ratcheteer',
+];
+
+var tmp = { ae:{}, ea:{}};
+for (var i=0; i<loan_words.length; i++) {
+	var loan_word = loan_words[i];
+	tmp.ea[translate(loan_word, 'ea')] = loan_word;
+	tmp.ae[translate(loan_word, 'ae')] = loan_word;
+}
+loan_words = tmp;
+
+function replace_loan_words(str, map) {
+	var re = new RegExp('\\b('+Object.keys(map).join('|')+')\\b','g');
+	return str.replace(re, word=>map[word]);
+}
+
+function translate(str,direction) {
+	var trans = '';
+	var esc = false;
+	for (var i=0; i<str.length; i++) {
+		var tmp = str.substr(i,1);
+		if (!esc) {
+			if (tmp=='[') {
+				esc = true;
+				continue;
+			}
+			if (direction=='ea') {
+				var key = eng.lastIndexOf(tmp);
+				trans += (key!=-1)?alb.substr(key,1):tmp;
+			}
+			else {
+				var key = alb.lastIndexOf(tmp);
+				trans += (key!=-1)?eng.substr(key,1):tmp;
+			}
+		}
+		else if (esc) {
+			if (tmp==']') {
+				esc = false;
+				continue;
+			}
+			trans += tmp;
+		}
+	}
+	
+	return trans;
+}
+
+function update_translation(str,direction) {
+	var alb_src = document.getElementById('albhed_src');
+	var eng_src = document.getElementById('english_src');
+	
+	var trans = translate(str, direction);
+	trans = replace_loan_words(trans, loan_words[direction]);
+	
+	if (direction=='ea') { alb_src.value = trans; }
+	else { eng_src.value = trans; }
+}
+
+// ]]>
+</script>
+</head>
+<body>
+Al Bhed:<br />
+<textarea rows="18" cols="84" id="albhed_src" onkeyup="update_translation(this.value,'ae');" /></textarea><br />
+English:<br />
+<textarea rows="18" cols="84" id="english_src" onkeyup="update_translation(this.value,'ea');" /></textarea>
+</body>
+</html>

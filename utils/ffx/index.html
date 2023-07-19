@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>FFX Monster Tracker</title>
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<script src="jquery.min.js"></script>
+<script src="jquery.cookie.js"></script>
+<script src="touche.min.js"></script>
+<script type="text/javascript">
+
+var list = {
+	"Besaid" : {
+		"Dingo ":3,
+		"Condor ":5,
+		"Water Flan ":3
+	},
+	"Kilika" : {
+		"Dinonix ":3,
+		"Killer Bee ":5,
+		"Yellow Element ":3,
+		"Ragora":1
+	},
+	"Mi’ihen Highroad" : {
+		"Mi’ihen Fang ":3,
+		"Ipiria ":3,
+		"Floating Eye ":5,
+		"White Element ":3,
+		"Raldo ":3,
+		"Vouivre ":5,
+		"Bomb ":5,
+		"Dual Horn ":5
+	},
+	"Mushroom Rock Road" : {
+		"Raptor ":3,
+		"Gandarewa ":5,
+		"Thunder Flan ":3,
+		"Red Element ":3,
+		"Lamashtu ":5,
+		"Funguar ":5,
+		"Garuda":1
+	},
+	"Djose" : {
+		"Garm ":3,
+		"Simurgh ":5,
+		"Bite Bug ":5,
+		"Snow Flan ":3,
+		"Bunyip ":3,
+		"Basilisk":1,
+		"Ochu":1
+	},
+	"Thunder Plains" : {
+		"Melusine ":3,
+		"Aerouge ":5,
+		"Buer ":5,
+		"Gold Element ":3,
+		"Kusiraqqu ":5,
+		"Iron Giant ":10,
+		"Larva":1,
+		"Quactuar":1
+	},
+	"Macalania" : {
+		"Snow Wolf ":3,
+		"Iguion ":3,
+		"Wasp ":5,
+		"Evil Eye ":5,
+		"Ice Flan ":3,
+		"Blue Element ":3,
+		"Murussu ":3,
+		"Mafdet ":3,
+		"Xiphos":1,
+		"Chimera":1
+	},
+	"Bikanel" : {
+		"Sand Wolf ":3,
+		"Alcyone ":5,
+		"Mushusuu ":5,
+		"Zu":1,
+		"Sand Worm":1,
+		"Cactuar":1
+	},
+	"Calm Lands" : {
+		"Skoll ":3,
+		"Nebiros ":5,
+		"Flame Flan ":3,
+		"Shred ":3,
+		"Anacondaur":1,
+		"Ogre":1,
+		"Coeurl":1,
+		"Chimera Brain":1,
+		"Malboro":1
+	},
+	"Sunken Cave" : {
+		"Yowie ":3,
+		"Imp ":5,
+		"Dark Element ":3,
+		"Nidhogg ":5,
+		"Thorn ":5,
+		"Valaha ":5,
+		"Epaaj":1,
+		"Ghost":1,
+		"Tonberry":1
+	},
+	"Gagazet" : {
+		"Bandersnatch ":3,
+		"Grenade ":5,
+		"Grat":1,
+		"Bashura":1,
+		"Splasher":1,
+		"Achelous":1,
+		"Maelspike":1
+	},
+	"Zanarkand" : {
+		"Ahriman ":5,
+		"Grendel ":5,
+		"Mandragora":1,
+		"Behemoth":1,
+		"Dark Flan":1
+	},
+	"Sin" : {
+		"Exoray ":5,
+		"Gemini A ":10,
+		"Gemini B ":10,
+		"Wraith":1,
+		"Demonolith":1,
+		"Great Malboro":1,
+		"Barbatos":1,
+		"Adamantoise":1,
+		"Behemoth King":1
+	},
+	"Omega Dungeon" : {
+		"Zaurus ":3,
+		"Floating Death ":5,
+		"Black Element ":3,
+		"Halma ":3,
+		"Puroboros ":5,
+		"Spirit":1,
+		"Machea":1,
+		"Master Coeurl":1,
+		"Master Tonberry":1,
+		"Varuna":1
+	}
+};
+
+var notes = {
+	"Mi’ihen Highroad" : "Ipiria & Vouivre favor the Oldroad, Bomb & Dual Horn the North End.",
+	"Mushroom Rock Road" : "Thunder Flan can be found on Mi’ihen Oldroad, the rest in Mushroom Rock airship destination.",
+	"Djose" : "Ochu only found on road to Moonflow, Basilisk on the Djose Highroad.",
+	"Thunder Plains" : "Press ◻ in front of glowing Cactuar Stones to enable Quactuar random encounters.",
+	"Macalania" : "Snow Wolf, Evil Eye, Ice Flan, & Mafdet favor Lake, the rest Woods.",
+	"Gagazet" : "Zanarkand monsters are considered Gagazet natives for some quests.",
+	"Zanarkand" : "Zanarkand monsters are considered Gagazet natives for some quests."
+};
+
+var lookup = []; // array of monster names, index is monster id
+var places = []; // array of place names, index is place id
+var mlookup = {}; // object of monster ids, indexed by monster names
+var plookup = {}; // object of location ids, indexed by location names
+var m2plookup = []; // array of place ids, index is monster id
+var data = []; // number caught indexed by monster id
+
+function animateCount(id,count) {
+	var c = $('#count');
+	var m = $('#monster-'+id+'-count');
+	c.removeClass('zoom');
+	c.css(m.offset());
+	c.html(count);
+	window.setTimeout(function() {
+		// delay is necessary to transition properly
+		// and to support the final 10 transition
+		c.addClass('zoom');
+	}, 1);
+}
+
+function updateMonster(id, count)
+{
+	data[id] = count;
+	saveData();
+	var total = parseInt($('#monster-'+id+'-total').html());
+	
+	animateCount(id,count);
+	window.setTimeout(function(){
+		// delay is necessary because of delay in animateCount
+		$('#monster-'+id+'-count').html(count);
+		if (count >= total)
+		{
+			$('#monster-'+id).addClass('bonus');
+		}
+		if (count >= 10)
+		{
+			$('#monster-'+id).addClass('captured');
+			$('#monster-'+id+'-btn').attr('disabled', true);
+		};		
+		
+		var pid = m2plookup[id];
+		updatePlace(pid);
+		updateExport();
+	},1);
+}
+
+function completePlace(place) {
+	var sublist = list[place];
+	for (var monster in sublist) {
+		var id = mlookup[monster];
+		updateMonster(id, 10);
+	};
+	updatePlace(plookup[place]);
+}
+
+function updatePlace(pid) {
+	$('#place-'+pid).removeClass('captured').parent().find('button').attr('disabled', false);
+	var caught = $('#place-'+pid+'-group li.captured').length;
+	var total = $('#place-'+pid+'-group li').length;
+	if (caught==total) {
+		$('#place-'+pid).addClass('captured').parent().find('button').attr('disabled', true);
+	}
+}
+
+function updateList()
+{
+	$('li').removeClass('captured bonus').find('button').attr('disabled', false);
+	for (var i=0; i<data.length; i++)
+	{		
+		updateMonster(i, data[i]);
+	};
+
+	for (var pid=0; pid<places.length; pid++) {
+		updatePlace(pid);
+	}
+}
+
+function updateExport()
+{
+	var query = '?data='+data.join(',');
+	$('#export').attr('href', query);
+}
+
+function saveData()
+{
+	$.cookie('monsters', data.join(), {expires: 365 * 5});
+}
+
+function loadDataFromCookie(name)
+{
+	var tmp = $.cookie(name).split(',');
+	if (tmp.length == data.length)
+	{
+		for (var id in tmp)
+		{
+			data[id] = parseInt(tmp[id]);
+		}
+	};
+}
+
+function loadDataFromHref() {
+	var bits = window.location.href;
+	if (bits.match(/\?data=/)) {
+		
+		var doImport = window.confirm('Import data from url? (This will replace any existing data.)');
+		if (doImport) {
+			bits = bits.replace(/^.+\?data=([^#&]+).*/, '$1');
+			var ddata = bits.split(','); // dirty
+		
+			for (var i=0; i<data.length; i++) {
+				if (ddata[i]) {
+					data[i] = parseInt(ddata[i]); // clean
+				}
+				else break;
+			}
+			saveData();
+		}
+
+		var href = window.location.href.replace(/\?.+$/, '');
+		window.history.replaceState(document.innerHTML, document.title, href);
+		
+		return doImport;
+	}
+	return false;
+}
+
+function loadData()
+{
+	if (!loadDataFromHref()) {
+		loadDataFromCookie('monsters');
+	}
+}
+
+function loadSave()
+{
+	loadDataFromCookie('monsters-save');
+}
+
+function resetData()
+{
+	$.cookie('monsters', '');
+	$.cookie('monsters-save', '');
+	data = [];
+	for (var i=0; i<lookup.length; i++)
+	{
+		data.push(0);
+	}
+	updateList();
+}
+
+function playerSaved()
+{
+	$.cookie('monsters-save', data.join(), {expires: 365 * 5});
+}
+
+function playerDied()
+{
+	loadSave();
+	updateList();
+}
+
+$(function()
+{
+	var html = '';
+	
+	html += '<div id="hud">';
+	html += '<button id="saved">Saved</button> ';
+	html += '<button id="died">Died</button> ';
+	html += '<button id="reset">Reset</button> ';
+	html += '</div>';
+	
+	html += '<p>This web app auto-saves monster counts. Hit “Saved” when you save in-game. If you die, hit “Died” to reload monster counts from the last time you hit “Saved”. Ganbatte!</p>'
+	
+	for (var place in list)
+	{
+		places.push(place);
+		var pid = places.length;
+		plookup[place] = pid;
+		
+		html += '<div id="place-'+pid+'-group">';
+		html += '<h1><span id="place-'+pid+'">'+place+'</span> <button id="place-'+pid+'-btn" title="Capture all">✔</button></h1>';
+		if (notes[place]) {
+			html += '<em>'+notes[place]+'</em>';
+		}
+		html += '<ul>';
+		var sublist = list[place];
+		for (var monster in sublist)
+		{
+			var id = lookup.length;
+			html += '<li id="monster-'+id+'">';
+			html += '<button id="monster-'+id+'-btn" class="plus">✚</button>';
+			html += '<button id="monster-'+id+'-max-btn" class="max">✔</button>';
+			html += monster;
+			html += ' <span class="count"><span id="monster-'+id+'-count">0</span>/<span id="monster-'+id+'-total">'+sublist[monster]+'</span>';
+			html += '</span></li>';
+			lookup.push(monster);
+			mlookup[monster] = id;
+			m2plookup[id] = pid;
+			data.push(0);
+		};
+		html += '</ul>';
+		html += '</div>';
+	};
+	
+	html += '<p><strong>Experimental:</strong> To export your data, <a id="export">copy this link</a> and load it up on another device.</p>';
+	
+	html += '<div id="count"></div>';
+	
+	$('body').html(html);
+	
+	$('li button.plus').click(function(){
+		var id = parseInt($(this).parent()[0].id.replace('monster-', ''));
+		updateMonster(id, data[id]+1);
+	});
+	$('li button.max').click(function(){
+		var id = parseInt($(this).parent()[0].id.replace('monster-', ''));
+		updateMonster(id, 10);
+	});
+	
+	$('h1 button').click(function(){
+		var pid = this.id.replace(/(place-|-btn)/gi, '');
+		var place = $('#place-'+pid).text();
+		completePlace(place);
+	});
+	
+	$('#saved').click(function()
+	{
+		playerSaved();
+	});
+	$('#died').click(function()
+	{
+		if (window.confirm('Reload data from last save sphere?')) playerDied();
+	});
+	$('#reset').click(function()
+	{
+		if (window.confirm('Zero all data? This action cannot be undone.')) resetData();
+	});
+	
+	loadData();
+	updateList();
+});
+
+</script>
+<style>
+*
+{
+	padding: 0;
+	margin: 0;
+}
+
+button
+{
+	position: absolute;
+	top: 0.5em;
+	right: 0.5em;
+	font-size: 0.6em;
+	line-height: 1.5em;
+
+	background-color: rgba(0,0,0,0.1);
+	border: none;
+	border-radius: 1em;
+	padding: 0 0.5em;
+}
+
+button:active
+{
+	background-color: rgba(0,0,0,0.2);
+}
+
+button.max { display: none; }
+
+button.plus
+{
+/*	right: 4em;*/
+}
+
+button:disabled
+{
+	display: none;
+}
+
+body
+{
+	font: 3em/1.5 sans-serif;
+	padding: 1em;
+}
+
+p
+{
+	margin-top: 1.5em;
+	font-size: 0.5em;
+}
+
+h1
+{
+	position: relative;
+	font-size: 1em;
+}
+
+em {
+	display: block;
+	font-size: 0.5em;
+	margin-bottom: 1em;
+}
+
+ul
+{
+	list-style: none;
+	margin-bottom: 1em;
+}
+
+li
+{
+	position: relative;
+	padding: 0 0.25em;
+}
+
+li:nth-child(odd)
+{
+	background-color: #eee;
+	border-radius: 0.2em;
+}
+
+h1 button,
+li button
+{
+	color: #fff;
+	padding: 0 0.4em;
+}
+
+.count,
+#count
+{
+	color: #999;
+	font-size: 0.7em;
+	line-height: 1em;
+}
+
+.captured
+{
+	color: #ddd;
+}
+
+.bonus .count span:first-child
+{
+	color: green;
+}
+
+.captured .count
+{
+	display: none;
+}
+
+#hud
+{
+	position: fixed;
+	top: 0;
+	right: 1em;
+	z-index: 100;
+}
+
+#hud button
+{
+	position: static;
+	top: auto;
+	right: auto;
+}
+
+#count {
+	position: absolute;
+	color: #000;
+	
+	-webkit-transform: scale(1);
+	opacity: 1;
+}
+
+#count.zoom {
+	-webkit-transition: all 0.5s ease;
+				
+	-webkit-transform: scale(2);
+	opacity: 0;
+}
+
+@media (max-width : 320px) {
+	body {
+		padding: 1em 0.25em;
+		font-size: 1.8em;
+	}
+}
+
+</style>
+</head>
+<body>
+	
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buffyverse</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="buff.png"/>
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<script src="jquery.min.js"></script>
+<script src="jquery.cookie.js"></script>
+<script>
+var label = 'last-viewed';
+var lastViewed = $.cookie(label);
+$(function() {
+	$('dd').each(function(i) {
+		this.id = 'ep-'+i;
+	}).click(function() {
+		if (lastViewed != null) {
+			$('#'+lastViewed).removeClass(label);
+		}
+		$(this).addClass(label);
+		lastViewed = this.id;
+		$.cookie(label, lastViewed, {expires: 365 * 5});
+	})
+	
+	if (lastViewed != null) {
+		var elem = $('#'+lastViewed).addClass(label);
+		$('body').animate({scrollTop:elem.offset().top - (elem.height()*7)}, 0);
+	}
+	
+});
+</script>
+<style>
+body {
+	font-family: sans-serif;
+	font-size: 1.5em;
+}
+dt {
+	font-weight: bold;
+	text-transform: uppercase;
+	font-size: 0.6em;
+	margin-top: 2em;
+}
+dd {
+	margin-left: 0;
+	white-space: nowrap;
+	color: #333;
+	background-color: #eee;
+	margin: 0.25em 0;
+	padding: 0.25em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-radius: 0.25em;
+}
+.last-viewed {
+	color: #eee;
+	background-color: #333;
+}
+dd:before {
+	content: 'B';
+	display: inline-block;
+	color: #fff;
+	font-size: 0.5em;
+	font-weight: bold;
+	background-color: rgba(0,0,0,0.25);
+	vertical-align: middle;
+	padding: 0.5em;
+	border-radius: 0.25em;
+	margin-right: 0.5em;
+}
+.angel:before {
+	content: 'A';
+	background-color: rgba(0,0,0,0.75);
+}
+.last-viewed:before {
+	color: #333;
+	background-color: #eee;
+}
+p {
+	font-size: 0.75em;
+}
+a {
+	color: #00b;
+	text-decoration: none;
+}
+</style>
+</head>
+<body>
+<p><strong>Suggested Buffy the Vampire Slayer/Angel viewing order from <a href="http://josswhedon.blogspot.com/2012/04/buffy-and-angel-episode-viewing-order.html">The Watcher’s Council</a>.</strong></p>
+<p>Tap to set your most recently viewed episode (uses cookies).</p>
+<dl>
+	<dt>Buffy Season 1</dt>
+		<dd class="buffy">Welcome to the Hellmouth</dd>
+		<dd class="buffy">The Harvest</dd>
+		<dd class="buffy">Witch</dd>
+		<dd class="buffy">Teacher’s Pet</dd>
+		<dd class="buffy">Never Kill a Boy on the First Date</dd>
+		<dd class="buffy">The Pack</dd>
+		<dd class="buffy">Angel</dd>
+		<dd class="buffy">I Robot, You Jane</dd>
+		<dd class="buffy">The Puppet Show</dd>
+		<dd class="buffy">Nightmares</dd>
+		<dd class="buffy">Out of Mind, Out of Sight</dd>
+		<dd class="buffy">Prophecy Girl</dd>
+
+	<dt>Buffy Season 2</dt>
+		<dd class="buffy">When She Was Bad</dd>
+		<dd class="buffy">Some Assembly Required</dd>
+		<dd class="buffy">School Hard</dd>
+		<dd class="buffy">Inca Mummy Girl</dd>
+		<dd class="buffy">Reptile Boy</dd>
+		<dd class="buffy">Halloween</dd>
+		<dd class="buffy">Lie to Me</dd>
+		<dd class="buffy">The Dark Age</dd>
+		<dd class="buffy">What’s My Line, Part One</dd>
+		<dd class="buffy">What’s My Line, Part Two</dd>
+		<dd class="buffy">Ted</dd>
+		<dd class="buffy">Bad Eggs</dd>
+		<dd class="buffy">Surprise</dd>
+		<dd class="buffy">Innocence</dd>
+		<dd class="buffy">Phases</dd>
+		<dd class="buffy">Bewitched, Bothered and Bewildered</dd>
+		<dd class="buffy">Passion</dd>
+		<dd class="buffy">Killed by Death</dd>
+		<dd class="buffy">I Only Have Eyes for You</dd>
+		<dd class="buffy">Go Fish</dd>
+		<dd class="buffy">Becoming, Part One</dd>
+		<dd class="buffy">Becoming, Part Two</dd>
+
+	<dt>Buffy Season 3</dt>
+		<dd class="buffy">Anne</dd>
+		<dd class="buffy">Dead Man’s Party</dd>
+		<dd class="buffy">Faith, Hope &amp; Trick</dd>
+		<dd class="buffy">Beauty and the Beasts</dd>
+		<dd class="buffy">Homecoming</dd>
+		<dd class="buffy">Band Candy</dd>
+		<dd class="buffy">Revelations</dd>
+		<dd class="buffy">8 Lovers Walk</dd>
+		<dd class="buffy">The Wish</dd>
+		<dd class="buffy">Amends</dd>
+		<dd class="buffy">Gingerbread</dd>
+		<dd class="buffy">Helpless</dd>
+		<dd class="buffy">The Zeppo</dd>
+		<dd class="buffy">Bad Girls</dd>
+		<dd class="buffy">Consequences</dd>
+		<dd class="buffy">Doppelgängland</dd>
+		<dd class="buffy">Enemies</dd>
+		<dd class="buffy">Earshot</dd>
+		<dd class="buffy">Choices</dd>
+		<dd class="buffy">The Prom</dd>
+		<dd class="buffy">Graduation Day, Part One</dd>
+		<dd class="buffy">Graduation Day, Part Two</dd>
+
+	<dt>Buffy Season 4 / Angel Season 1</dt>
+		<dd class="buffy">The Freshman</dd>
+		<dd class="angel">City of...</dd>
+		<dd class="buffy">Living Conditions</dd>
+		<dd class="angel">Lonely Hearts</dd>
+		<dd class="buffy">The Harsh Light of Day</dd>
+		<dd class="angel">In the Dark</dd>
+		<dd class="buffy">Fear, Itself</dd>
+		<dd class="angel">I Fall to Pieces</dd>
+		<dd class="buffy">Beer Bad</dd>
+		<dd class="angel">Rm w/a Vu</dd>
+		<dd class="buffy">Wild at Heart</dd>
+		<dd class="angel">Sense &amp; Sensitivity</dd>
+		<dd class="buffy">The Initiative</dd>
+		<dd class="angel">Bachelor Party</dd>
+		<dd class="buffy">Pangs</dd>
+		<dd class="angel">I Will Remember You</dd>
+		<dd class="buffy">Something Blue</dd>
+		<dd class="angel">Hero</dd>
+		<dd class="buffy">Hush</dd>
+		<dd class="buffy">Doomed</dd>
+		<dd class="angel">Parting Gifts</dd>
+		<dd class="angel">Somnambulist</dd>
+		<dd class="buffy">A New Man</dd>
+		<dd class="angel">Expecting</dd>
+		<dd class="angel">She</dd>
+		<dd class="buffy">The I in Team</dd>
+		<dd class="buffy">Goodbye Iowa</dd>
+		<dd class="angel">I’ve Got You Under My Skin</dd>
+		<dd class="angel">The Prodigal</dd>
+		<dd class="buffy">This Year’s Girl</dd>
+		<dd class="buffy">Who Are You</dd>
+		<dd class="angel">The Ring</dd>
+		<dd class="buffy">Superstar</dd>
+		<dd class="angel">Eternity</dd>
+		<dd class="buffy">Where the Wild Things Are</dd>
+		<dd class="buffy">New Moon Rising</dd>
+		<dd class="angel">Five by Five</dd>
+		<dd class="angel">Sanctuary</dd>
+		<dd class="buffy">The Yoko Factor</dd>
+		<dd class="buffy">Primeval</dd>
+		<dd class="buffy">Restless</dd>
+		<dd class="angel">War Zone</dd>
+		<dd class="angel">Blind Date</dd>
+		<dd class="angel">To Shanshu in L.A.</dd>
+
+	<dt>Buffy Season 5 / Angel Season 2</dt>
+		<dd class="angel">Judgment</dd>
+		<dd class="buffy">Buffy vs. Dracula</dd>
+		<dd class="angel">Are You Now or Have You Ever Been</dd>
+		<dd class="buffy">Real Me</dd>
+		<dd class="angel">First Impressions</dd>
+		<dd class="buffy">The Replacement</dd>
+		<dd class="angel">Untouched</dd>
+		<dd class="buffy">Out of My Mind</dd>
+		<dd class="angel">Dear Boy</dd>
+		<dd class="buffy">No Place Like Home</dd>
+		<dd class="angel">Guise Will Be Guise</dd>
+		<dd class="buffy">Family</dd>
+		<dd class="angel">Darla</dd>
+		<dd class="buffy">Fool for Love</dd>
+		<dd class="angel">The Shroud of Rahmon</dd>
+		<dd class="buffy">Shadow</dd>
+		<dd class="angel">The Trial</dd>
+		<dd class="buffy">Listening to Fear</dd>
+		<dd class="angel">Reunion</dd>
+		<dd class="buffy">Into the Woods</dd>
+		<dd class="angel">Redefinition</dd>
+		<dd class="buffy">Triangle</dd>
+		<dd class="angel">Blood Money</dd>
+		<dd class="buffy">Checkpoint</dd>
+		<dd class="angel">Happy Anniversary</dd>
+		<dd class="buffy">Blood Ties</dd>
+		<dd class="angel">The Thin Dead Line</dd>
+		<dd class="buffy">Crush</dd>
+		<dd class="angel">Reprise</dd>
+		<dd class="buffy">I Was Made to Love You</dd>
+		<dd class="angel">Epiphany</dd>
+		<dd class="buffy">The Body</dd>
+		<dd class="angel">Disharmony</dd>
+		<dd class="buffy">Forever</dd>
+		<dd class="angel">Dead End</dd>
+		<dd class="buffy">Intervention</dd>
+		<dd class="angel">Belonging</dd>
+		<dd class="angel">Over the Rainbow</dd>
+		<dd class="buffy">Tough Love</dd>
+		<dd class="buffy">Spiral</dd>
+		<dd class="angel">Through the Looking Glass</dd>
+		<dd class="buffy">The Weight of the World</dd>
+		<dd class="buffy">The Gift</dd>
+		<dd class="angel">There’s No Place Like Plrtz Glrb</dd>
+
+	<dt>Buffy Season 6 / Angel Season 3</dt>
+		<dd class="angel">Heartthrob</dd>
+		<dd class="angel">That Vision Thing</dd>
+		<dd class="buffy">Bargaining, Part One</dd>
+		<dd class="buffy">Bargaining, Part Two</dd>
+		<dd class="angel">That Old Gang of Mine</dd>
+		<dd class="buffy">After Life</dd>
+		<dd class="angel">Carpe Noctem</dd>
+		<dd class="buffy">Flooded</dd>
+		<dd class="angel">Fredless</dd>
+		<dd class="buffy">Life Serial</dd>
+		<dd class="angel">Billy</dd>
+		<dd class="buffy">All the Way</dd>
+		<dd class="angel">Offspring</dd>
+		<dd class="buffy">Once More, with Feeling</dd>
+		<dd class="angel">Quickening</dd>
+		<dd class="buffy">Tabula Rasa</dd>
+		<dd class="angel">Lullaby</dd>
+		<dd class="buffy">Smashed</dd>
+		<dd class="buffy">Wrecked</dd>
+		<dd class="angel">Dad</dd>
+		<dd class="buffy">Gone</dd>
+		<dd class="angel">Birthday</dd>
+		<dd class="angel">Provider</dd>
+		<dd class="buffy">Doublemeat Palace</dd>
+		<dd class="angel">Waiting in the Wings</dd>
+		<dd class="buffy">Dead Things</dd>
+		<dd class="buffy">Older and Far Away</dd>
+		<dd class="angel">Couplet</dd>
+		<dd class="angel">Loyalty</dd>
+		<dd class="buffy">As You Were</dd>
+		<dd class="angel">Sleep Tight</dd>
+		<dd class="buffy">Hell’s Bells</dd>
+		<dd class="buffy">Normal Again</dd>
+		<dd class="angel">Forgiving</dd>
+		<dd class="angel">Double or Nothing</dd>
+		<dd class="angel">The Price</dd>
+		<dd class="buffy">Entropy</dd>
+		<dd class="angel">A New World</dd>
+		<dd class="buffy">Seeing Red</dd>
+		<dd class="angel">Benediction</dd>
+		<dd class="buffy">Villains</dd>
+		<dd class="angel">Tomorrow</dd>
+		<dd class="buffy">Two to Go</dd>
+		<dd class="buffy">Grave</dd>
+	
+	<dt>Buffy Season 7 / Angel Season 4</dt>
+		<dd class="buffy">Lessons</dd>
+		<dd class="buffy">Beneath You</dd>
+		<dd class="angel">Deep Down</dd>
+		<dd class="buffy">Same Time, Same Place</dd>
+		<dd class="angel">Ground State</dd>
+		<dd class="buffy">Help</dd>
+		<dd class="angel">The House Always Wins</dd>
+		<dd class="buffy">Selfless</dd>
+		<dd class="angel">Slouching Toward Bethlehem</dd>
+		<dd class="angel">Supersymmetry</dd>
+		<dd class="buffy">Him</dd>
+		<dd class="angel">Spin the Bottle</dd>
+		<dd class="buffy">Conversations with Dead People</dd>
+		<dd class="angel">Apocalypse, Nowish</dd>
+		<dd class="buffy">Sleeper</dd>
+		<dd class="buffy">Never Leave Me</dd>
+		<dd class="buffy">Bring on the Night</dd>
+		<dd class="buffy">Showtime</dd>
+		<dd class="angel">Habeas Corpses</dd>
+		<dd class="buffy">Potential</dd>
+		<dd class="angel">Long Day’s Journey</dd>
+		<dd class="angel">Awakening</dd>
+		<dd class="buffy">The Killer in Me</dd>
+		<dd class="angel">Soulless</dd>
+		<dd class="buffy">First Date</dd>
+		<dd class="angel">Calvary</dd>
+		<dd class="buffy">Get It Done</dd>
+		<dd class="buffy">Storyteller</dd>
+		<dd class="angel">Salvage</dd>
+		<dd class="angel">Release</dd>
+		<dd class="buffy">Lies My Parents Told Me</dd>
+		<dd class="angel">Orpheus</dd>
+		<dd class="angel">Players</dd>
+		<dd class="angel">Inside Out</dd>
+		<dd class="angel">Shiny Happy People</dd>
+		<dd class="buffy">Dirty Girls</dd>
+		<dd class="angel">The Magic Bullet</dd>
+		<dd class="angel">Sacrifice</dd>
+		<dd class="buffy">Empty Places</dd>
+		<dd class="angel">Peace Out</dd>
+		<dd class="buffy">Touched</dd>
+		<dd class="angel">Home</dd>
+		<dd class="buffy">End of Days</dd>
+		<dd class="buffy">Chosen</dd>
+
+	<dt>Angel Season 5</dt>
+		<dd class="angel">Conviction</dd>
+		<dd class="angel">Just Rewards</dd>
+		<dd class="angel">Unleashed</dd>
+		<dd class="angel">Hell Bound</dd>
+		<dd class="angel">Life of the Party</dd>
+		<dd class="angel">The Cautionary Tale of Numero Cinco</dd>
+		<dd class="angel">Lineage</dd>
+		<dd class="angel">Destiny</dd>
+		<dd class="angel">Harm’s Way</dd>
+		<dd class="angel">Soul Purpose</dd>
+		<dd class="angel">Damage</dd>
+		<dd class="angel">You’re Welcome</dd>
+		<dd class="angel">Why We Fight</dd>
+		<dd class="angel">Smile Time</dd>
+		<dd class="angel">A Hole in the World</dd>
+		<dd class="angel">Shells</dd>
+		<dd class="angel">Underneath</dd>
+		<dd class="angel">Origin</dd>
+		<dd class="angel">Time Bomb</dd>
+		<dd class="angel">The Girl in Question</dd>
+		<dd class="angel">Power Play</dd>
+		<dd class="angel">Not Fade Away</dd>
+</dl>
+</body>
+</html>

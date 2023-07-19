@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Final Fantasy XIII-2 Clock Puzzle Solver</title>
+<meta name="viewport" id="viewport" content="width=device-width,user-scalable=no">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<style>
+body
+{
+	font-family: sans-serif;
+}
+form
+{
+	float: left;
+	margin-bottom: 1em;
+}
+
+form div
+{
+	white-space: nowrap;
+}
+form div:nth-child(even)
+{
+	background-color: #eee;
+	border-radius: 4px;
+}
+form div.disabled
+{
+	opacity: 0.1;
+}
+
+form div span,
+form div label
+{
+	margin: 2px;
+	padding: 0 2px;
+	display: inline-block;
+	min-width: 20px;
+	text-align: right;
+	border-radius: 4px;
+}
+input[type='radio']
+{
+	margin-right: 4px;
+}
+
+form div span
+{
+	font-weight: bold;
+}
+
+#solution
+{
+	position: relative;
+	float: left;
+	margin: 0 0 2em;
+	
+	width: 312px;
+	height: 312px;
+	background-color: #eee;
+	border-radius: 156px;
+}
+
+#error
+{
+	font: 12px/6px sans-serif;
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	text-align: center;
+	color: red;
+}
+
+#solution canvas
+{
+	position: relative;
+	z-index: 1;
+}
+
+#solution .hour
+{
+	position: absolute;
+	z-index: 100;
+	font: bold 12px/24px sans-serif;
+	text-align: center;
+	width: 24px;
+	height: 24px;
+	border-radius: 12px;
+	background-color: #fff;
+}
+
+#solution .hour .step
+{
+	position: absolute;
+	top: 16px;
+	left: 16px;
+	font: 9px/16px sans-serif;
+	text-align: center;
+	width: 16px;
+	height: 16px;
+	border-radius: 16px;
+	color: #fff;
+	background-color: #000;
+}
+
+#solution .hour .pos
+{
+	position: absolute;
+	top: 24px;
+	left: 0px;
+	font: 9px/10px sans-serif;
+	width: 24px;
+	text-align: center;
+}
+
+#solution .hour .step.start
+{
+	background-color: red;
+}
+
+</style>
+</head>
+<body>
+<h1>Final Fantasy XIII-2 Clock Puzzle Solver</h1>
+<p>Enter numbers clockwise, starting from 12 o'clock position. Press ➡ to solve, ✖ to reset. Based on and including code from <a href="http://nyusuke.com/game/ff13/ff13-2puzzle_phone.html">nyusuke.com</a>. For personal use only.</p>
+<form id="puzzle" onsubmit="return false;"></form>
+<div id="solution"></div>
+<script>
+var clock = 
+{
+	version : 2, 
+	hours : [],
+	steps : [],
+	error : '',
+	
+	init : function()
+	{
+		var html = '';
+		html += '<button id="reset">✖</button>';
+		for (var i=1; i<=6; i++)
+		{
+			html += '<button class="num" id="btn-'+i+'">'+i+'</button>';
+			// html += '<div>';
+			// html += '<span>'+i+'</span>';
+			// for (var j=0; j<7; j++)
+			// {
+			// 	var str = j==0 ? '—' : j;
+			// 	var sel = j==0 ? ' checked' : '';
+			// 
+			// 	html += '<label><input type="radio" id="input'+i+'-'+j+'" name="input'+i+'" value="'+j+'"'+sel+'>'+str+'</label>';
+			// }
+			// html += '</div>';
+		};
+		html += '<button id="solve">➡</button>';
+		$('#puzzle').html(html);
+		$('#puzzle button.num').on('click', function(){ clock.load(this.innerHTML); clock.redraw(); return false;});
+		// $('#puzzle input:radio').on('click', function(){ clock.load(); clock.redraw(); });
+		$('#reset').on('click', function(){ clock.reset(); return false; });
+		$('#solve').on('click', function(){ clock.solve(); return false; });
+
+		this.redraw();
+	},
+	redraw : function()
+	{
+		var html = '';
+		var isSolved = this.steps.length > 0;
+		var l = this.hours.length; // isSolved ? this.steps.length : 13;
+		var r = 140;
+		var cx = r;
+		var cy = r;
+
+		for (var i=0; i<l; i++)
+		{
+			var p = isSolved ? this.steps[i] : i;
+			var a = p * 2 * Math.PI / l;
+			var x = Math.floor(r * Math.sin(a)) + cx;
+			var y = r * 2 - (Math.floor(r * Math.cos(a)) + cy);
+			
+			x += 4;
+			y += 4;
+			
+			var c = i==0?' start':'';
+
+			var pos		= ''; //isSolved?'':'<span class="pos">'+i+'</span>';
+			var step 	= isSolved?'<span class="step'+c+'">'+(i+1)+'</span>':'';
+			var val		= isSolved?this.hours[this.steps[i]]:(this.hours[i]?this.hours[i]:'—');
+
+			html += '<div class="hour" style="left:'+x+'px; top:'+y+'px;">'+pos+val+step+'</div>';
+		};
+		
+		html += '<div id="error">'+this.error+'</div>';
+		html += '<canvas id="connect" width="304" height="304"></canvas>';
+		
+		$('#solution').html(html);
+		$('#puzzle div').removeClass('disabled');
+		
+		if (isSolved)
+		{
+			// from http://stackoverflow.com/questions/4712189/how-to-draw-a-line-between-2-elements-using-jquery-and-refreshing-that-line
+			var connect = function(sourceElement, targetElement)
+			{
+				//draw from/to the centre, not the top left
+			    //don't use .position()
+	            //that will be relative to the parent div and not the page
+	            var sourceX = sourceElement.offset().left + sourceElement.width() / 2;
+	            var sourceY = sourceElement.offset().top + sourceElement.height() / 2;
+
+	            var targetX = targetElement.offset().left + sourceElement.width() / 2;
+	            var targetY = targetElement.offset().top + sourceElement.height() / 2;
+
+	            var canvas = $('#connect');
+
+	            //you need to draw relative to the canvas not the page
+	            var canvasOffsetX = canvas.offset().left;
+	            var canvasOffsetY = canvas.offset().top;
+
+	            var context = canvas[0].getContext('2d');
+
+	            //draw line
+	            context.beginPath();
+	            context.moveTo(sourceX - canvasOffsetX, sourceY - canvasOffsetY);
+	            context.lineTo(targetX - canvasOffsetX, targetY - canvasOffsetY);
+	            context.closePath();
+	            //ink line
+	            context.lineWidth = 1;
+	            context.strokeStyle = '#999';
+	            context.stroke();
+			};
+			
+			var divs = $('.hour');
+			for (var i=0; i<divs.length; i++)
+			{
+				var j = i+1;
+				if (j > divs.length - 1) break;
+				
+				connect($(divs[i]), $(divs[j]));
+			};
+			
+			$('#puzzle div:nth-child(n+'+(this.hours.length+1)+')').addClass('disabled');
+		};
+	},
+	reset : function()
+	{
+		$('#puzzle input:radio').prop('checked', false);
+		for (var i=0; i<=12; i++)
+		{
+			$('#input'+i+'-0').prop('checked', true);
+		};
+		this.hours = [];
+		this.steps = [];
+		this.error = '';
+		this.redraw();
+		window.location.hash = 'puzzle';
+	},
+	load : function(num)
+	{
+		this.steps = [];
+		this.error = '';
+		this.hours[this.hours.length] = parseInt(num);
+	},
+	OLD_load : function()
+	{
+		var input = [];
+		var form = $('#puzzle')[0];
+		for (var i=0; i<=12; i++)
+		{
+			var val = parseInt($('input:radio[name=input'+i+']:checked').val());
+			input.push(val); 
+		};
+
+		// reset
+		this.steps = [];
+		this.error = '';
+		this.hours = [];
+		for (var i in input)
+		{
+			if (input[i] == 0) break;
+			this.hours[i] = input[i];
+		};
+	},
+	solve : function()
+	{
+		// check for input
+		// this.load();
+				
+		// solve once we have enough data
+		if (this.hours.length >= 5)
+		{
+			g_inputNumbers = this.hours;
+
+			if (CalcMain())
+			{
+				this.steps = g_result;
+			}
+			else
+			{
+				this.error = 'Unsolvable';
+			};			
+		}
+		else
+		{
+			this.error = 'Need input! (5 minimum)';
+		};
+		this.redraw();
+		window.location.hash = 'solution';
+	}
+};
+$(function() { clock.init(); });
+
+/**
+	Puzzle solving board clock generation script FF13-2
+	
+	created date: 2011.12.20
+	last updated: 2011.12.26
+
+	developed by (C) にゅすけ / nyusuke.com and 極限攻略データベース
+	
+	from:
+		http://nyusuke.com/game/ff13/ff13-2puzzle.html
+		http://nyusuke.com/game/ff13/ff13-2puzzle_phone.html
+	
+	Translated/optimized for iOS by Shaun Inman
+	
+	last updated: 2012.02.13
+ */
+
+/// Solve the puzzle
+function Solver( inputNumbers, numResult, usedIndexBits )
+{
+//	document.write( 'input: ', g_result[ numResult - 1 ], ' count:', numResult, ' bit: ', usedIndexBits, "<BR>" ) ;
+	// If you have ended up returns true until the end
+	if ( numResult == inputNumbers.length ) {
+		return true ;
+	}
+	
+	// At that stage yet finalized 0 .. numResult-1, to explore the next few
+	var num = inputNumbers.length ;
+	var prevIndex = g_result[ numResult - 1 ] ;
+	var which ;
+	var index ;
+	for ( which = 0 ; which < 2 ; which++ ) {
+		// Get the index of the next
+		if ( which == 0 ) {
+			index = ( prevIndex + inputNumbers[ prevIndex ] ) % num ;
+		} else {
+			var index1 = ( prevIndex - inputNumbers[ prevIndex ] + num ) % num ;
+			//(If it was written in six and three, for example) in fact the same
+			if ( index == index1 ) break ;
+			index = index1 ;
+		}
+		
+		// Is not being used this index is already
+		if ( usedIndexBits & ( 1 << index ) ) continue ;
+		
+		// To calculate the destination that this index in addition
+		g_result[ numResult ] = index ;
+		var isSuccess = Solver( inputNumbers, numResult + 1, usedIndexBits | ( 1 << index ) ) ;
+		if ( isSuccess ) return true ;
+	}
+	return false ;
+}
+
+/// Count the input information
+function CountInVector( inputNumbers )
+{
+	var num = inputNumbers.length ;
+	var i, j ;
+	var max = num - num / 2 ; // is rounded up with an odd number
+	for ( i = 0 ; i < num ; i++ ) {
+		// How far away from their own
+		var bits = 0 ;
+		for ( j = 1 ; j <= max ; j++ ) {
+			// Forward order
+			var index0 = ( i + j ) % num ;
+			// Reverse order
+			var index1 = ( i - j + num ) % num ;
+			if ( inputNumbers[ index0 ] == j ) {
+				// index0 -> i possible transition
+				bits |= ( 1 << index0 ) ;
+			}
+			if ( inputNumbers[ index1 ] == j ) {
+				// index1 -> i the transition can be
+				bits |= ( 1 << index1 ) ;
+			}
+		}
+		// Count the bits that are standing bits
+		var count = 0 ;
+		for ( j = 0 ; j < num ; j++ ) {
+			if ( bits & ( 1 << j ) ) count++ ;
+		}
+		g_inVectorCount[ i ] = count ;
+		g_inVectorBits[ i ] = bits ;
+	}
+}
+
+function CalcMain()
+{
+	// Held in the bit count, the index of each of the number of inputs for each digit
+	var num = g_inputNumbers.length ;
+	g_inVectorBits = new Array( num ) ;
+	g_inVectorCount = new Array( num ) ;
+	CountInVector( g_inputNumbers ) ;
+	
+	// Start counting from there If you are a thing of Zero
+	// Find the starting position in the brute-force must be
+	var isSuccess = false ;
+	{
+		var i ;
+		var startIndex = -1 ;
+		for ( i = 0 ; i < num ; i++ ) {
+			if ( g_inVectorCount[ i ] == 0 ) {
+				startIndex = i ;
+				break ;
+			}
+		}
+		g_result = new Array( num ) ;
+		if ( startIndex == 0 ) {
+			// Was!
+			g_result[0] = startIndex ;
+			isSuccess = Solver( g_inputNumbers, 1, 1 << startIndex ) ;
+		} else {
+			// This is a brute I'm sorry
+			for ( i = 0 ; i < num ; i++ ) {
+				g_result[0] = i ;
+				isSuccess = Solver( g_inputNumbers, 1, 1 << i ) ;
+				if ( isSuccess ) break ;
+			}
+		}
+	}
+	return isSuccess ;
+}
+
+</script>
+</body>
+</html>

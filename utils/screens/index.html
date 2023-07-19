@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=480">
+<meta charset="utf-8">
+<title>Console to Screen</title>
+<script type="text/javascript">
+var print = console.log;
+function isset(varvalue) {
+	return !(typeof varvalue==='undefined' || varvalue===null);
+}
+function one(selector) { return document.querySelector(selector); }
+function all(selector) { return document.querySelectorAll(selector); }
+function wot(what) {
+	// takes a string selector, existing node, node list, or array, and returns a node list or array
+	var nodes = what;
+	if (typeof what == 'string') {
+		nodes = all(what);
+	}
+	else if (!(what instanceof NodeList || Array.isArray(what))) {
+		nodes = [what];
+	}
+	// if (nodes.length==0) console.error('wot miss: ', what);
+	return nodes;
+}
+function each(what, eachFunc) {
+	var nodes = wot(what);
+	for (var i=0; i<nodes.length; i++) {
+		if (eachFunc(i,nodes[i])) break;
+	}
+}
+(function(global) {
+	// NOTE: this construction supports unbindAll()
+	// document.body on down can be unbound in a
+	// single call replacing the documet.body with 
+	// a clone of itself but we need to special case
+	// document and window bindings to track and 
+	// unbind them manually
+
+	// private
+	var bindings = {};
+	function pushBinding(node, eventName, eventHandler) {
+		if (node==window || node==document) {
+			var nodeName = node==window?'window':'document';
+			if (!bindings[nodeName]) bindings[nodeName] = {};
+			if (!bindings[nodeName][eventName]) bindings[nodeName][eventName] = [];
+			// print(`pushed bindng ${nodeName}.${eventName}[${bindings[nodeName][eventName].length}]`);
+			bindings[nodeName][eventName].push(eventHandler);
+		}
+	}
+	function dropBinding(node, eventName, eventHandler) {
+		if (node==window || node==document) {
+			var nodeName = node==window?'window':'document';
+			if (!bindings[nodeName]) return;
+			if (!bindings[nodeName][eventName]) return;
+			var i = bindings[nodeName][eventName].indexOf(eventHandler);
+			if (i==-1) return;
+			// print(`dropped bindng ${nodeName}.${eventName}[${i}]`);
+			bindings[nodeName][eventName].splice(i, 1);
+		}
+	}
+
+	// public
+	function bind(what, eventNames, eventHandler) {
+		var nodes = wot(what);
+		eventNames = eventNames.split(/\s*,\s*/);
+		for (var j=0; j<nodes.length; j++) {
+			var node = nodes[j];
+			for (var i=0; i<eventNames.length; i++) {
+				var eventName = eventNames[i]
+				node.addEventListener(eventName, eventHandler);
+				pushBinding(node, eventName, eventHandler);
+			}
+		}
+	}
+	function unbind(what, eventNames, eventHandler) {
+		var nodes = wot(what);
+		eventNames = eventNames.split(/\s*,\s*/);
+		for (var j=0; j<nodes.length; j++) {
+			var node = nodes[j];
+			for (var i=0; i<eventNames.length; i++) {
+				var eventName = eventNames[i]
+				node.removeEventListener(eventName, eventHandler);
+				dropBinding(node, eventName, eventHandler);
+			}
+		}
+	}
+	function unbindAll() {
+		// reset all but the document and window event listeners
+		document.body.replaceWith(document.body.cloneNode(true));
+		for (var nodeName in bindings) {
+			var node = nodeName=='window'?window:document;
+			for (var eventName in bindings[nodeName]) {
+				var eventHandlers = bindings[nodeName][eventName];
+				for (var i=eventHandlers.length-1; i>=0; i--) {
+					unbind(node, eventName, eventHandlers[i]);
+				}
+			}
+		}
+	}
+
+	global.bind = bind;
+	global.unbind = unbind;
+	global.unbindAll = unbindAll;
+})(window);
+function ready(eventHandler) { bind(document, 'DOMContentLoaded', eventHandler); }
+function style(rules, id) {
+	if (id) {
+		var node = one('#'+id);
+		if (node) node.parentNode.removeChild(node);
+	}
+	var node = document.createElement('style');
+	if (id) node.id = id;
+	node.type = 'text/css';
+	node.appendChild(document.createTextNode(rules));
+	document.head.appendChild(node);
+}
+function clone(obj) {
+	return JSON.parse(JSON.stringify(obj));
+}
+</script>
+<script type="text/javascript">
+
+function recalc() {
+	// dst screen
+	var pixel_width = parseInt(one('#dst_width').value)
+	var pixel_height = parseInt(one('#dst_height').value)
+	var inch_diagonal = parseFloat(one('#dst_size').value)
+
+	// src screen
+	var sub_pixel_width = parseInt(one('#src_width').value)
+	var sub_pixel_height = parseInt(one('#src_height').value)
+	var integer_scaling = one('#src_nn').checked
+
+	if (isNaN(pixel_width) || isNaN(pixel_height) || isNaN(inch_diagonal) || isNaN(sub_pixel_width) || isNaN(sub_pixel_height)) return;
+	if (pixel_width==0 || pixel_height==0 || inch_diagonal==0 || sub_pixel_width==0 || sub_pixel_height==0) return;
+
+	// calc
+	var pixel_diagonal = Math.sqrt(Math.pow(pixel_width,2) + Math.pow(pixel_height,2))
+
+	var inch_width = inch_diagonal * pixel_width / pixel_diagonal
+	var inch_height = inch_diagonal * pixel_height / pixel_diagonal
+
+	var final_diagonal = Math.sqrt(Math.pow(inch_width,2) + Math.pow(inch_height,2))
+	// print(`${pixel_width}x${pixel_height} ${inch_diagonal}" (${inch_width.toFixed(1)}"x${inch_height.toFixed(1)}")`);
+
+	var sub_scale_x = pixel_width / sub_pixel_width
+	var sub_scale_y = pixel_height / sub_pixel_height
+
+	if (integer_scaling) {
+		sub_scale_x = Math.floor(sub_scale_x)
+		sub_scale_y = Math.floor(sub_scale_y)
+	}
+
+	var sub_scale = sub_scale_x < sub_scale_y ? sub_scale_x : sub_scale_y
+
+	var scaled_pixel_width = sub_pixel_width * sub_scale
+	var scaled_pixel_height = sub_pixel_height * sub_scale
+
+	var sub_inch_width = inch_width * scaled_pixel_width / pixel_width
+	var sub_inch_height = inch_height * scaled_pixel_height / pixel_height
+	var sub_inch_diagonal = Math.sqrt(Math.pow(sub_inch_width,2) + Math.pow(sub_inch_height,2))
+	// print(`${sub_pixel_width}x${sub_pixel_height}@${sub_scale}x ${sub_inch_diagonal.toFixed(1)}" (${sub_inch_width.toFixed(1)}"x${sub_inch_height.toFixed(1)}")`)
+
+	// NOTE: CSS inches do not equal on screen inches :weary: might as well just set pixels
+	var dst = one('#dst')
+	dst.style.width  = inch_width+'in'
+	dst.style.height = inch_height+'in'
+	
+	var src = one('#src')
+	src.style.width  = sub_inch_width+'in'
+	src.style.height = sub_inch_height+'in'
+	
+	var scl = one('#scale');
+	if (sub_inch_diagonal.toFixed(1)==0) scl.innerHTML = ''
+	else scl.innerHTML = `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`
+	
+	var hash = {};
+	each('input,select', function(i,node) {
+		hash[node.id] = node.tagName=='SELECT' ? parseInt(node.selectedIndex) : node.type=='checkbox' ? (node.checked?1:0) : parseFloat(node.value);
+	})
+	one('#share').href=`./#${JSON.stringify(hash).replace(/["\{\}]/g,'')}`
+	
+	// NOTE: Safari Version 15.3 (17612.4.9.1.8) doesn't redraw properly after changing console 
+	// seems like updating the innerHTML and adding transform: translateZ(0); forces a redraw
+	dst.innerHTML += ' ';
+	src.innerHTML += ' ';
+	scl.innerHTML += ' ';
+}
+
+ready(function() {
+	if (location.hash) {
+		var defaults = location.hash.replace(/^#/, '').split(',')
+		var object = {};
+		for (var i=0; i<defaults.length; i++) {
+			var pair = defaults[i].split(':') 
+			object[pair[0]] = pair[1];
+		}
+		for (var key in object) {
+			var node = one(`#${key}`);
+			if (node.tagName=='SELECT') {
+				// index can change with additions, match on resolution when that happens
+				node.selectedIndex = parseInt(object[key]);
+				if (key.match(/^src_/)) {
+					var n = node.value.match(/\(([0-9]+)x([0-9]+)\)/);
+					var nw = n[1];
+					var nh = n[2];
+					var w = object.src_width;
+					var h = object.src_height;
+					if (w!=nw || h!=nh) {
+						var found = false;
+						for (var i=1; i<node.length; i++) {
+							var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\)/);
+							var ow = o[1];
+							var oh = o[2];
+							if (ow==w && oh==h) {
+								found = true;
+								node.selectedIndex = i;
+								break;
+							}
+						}
+						if (!found) {
+							node.selectedIndex = 0;
+						}
+					}
+				}
+				else if (node.value!='Custom') {
+					var n = node.value.match(/\(([0-9]+)x([0-9]+)\s+([0-9.]+)"\)/)
+					print(node.value, n)
+					var nw = n[1]
+					var nh = n[2]
+					var ns = n[3]
+					var w = object.dst_width;
+					var h = object.dst_height;
+					var s = object.dst_size;
+					if (w!=nw || h!=nh || s!=ns) {
+						var found = false;
+						for (var i=1; i<node.length; i++) {
+							var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\s+([0-9.]+)"\)/)
+							print(o)
+							
+							var ow = o[1];
+							var oh = o[2];
+							var os = o[3];
+							if (ow==w && oh==h && os==s) {
+								found = true;
+								node.selectedIndex = i;
+								break;
+							}
+						}
+						if (!found) {
+							node.selectedIndex = 0;
+						}
+					}
+				}
+			}
+			else if (node.tagName=='INPUT') {
+				if (node.type=='checkbox') {
+					node.checked = object[key]=='1'
+				}
+				else {
+					node.value = object[key]
+				}
+			}
+		}
+	}
+	
+	changeSrc();
+	changeDst();
+	recalc()
+	bind('input', 'change,blur', recalc)
+	
+	function changeDst() {
+		var dst = one('#dst_screen');
+		var value = dst.value
+		if (value=='Custom') {
+			one('#dst_custom').classList.add('custom')
+			return
+		}
+		one('#dst_custom').classList.remove('custom')
+
+		var m = value.match(/\(([0-9]+)x([0-9]+)\s+([0-9.]+)"\)/)
+		one('#dst_width').value = m[1]
+		one('#dst_height').value = m[2]
+		one('#dst_size').value = m[3]
+		recalc()
+	}
+	bind('#dst_screen', 'change', changeDst);
+	
+	function changeSrc() {
+		var src = one('#src_screen');
+		var value = src.value;
+		if (value=='Custom') {
+			one('#src_custom').classList.add('custom')
+			return
+		}
+		one('#src_custom').classList.remove('custom')
+
+		var m = value.match(/\(([0-9]+)x([0-9]+)\)/)
+		one('#src_width').value = m[1]
+		one('#src_height').value = m[2]
+		recalc()
+	}
+	bind('#src_screen', 'change', changeSrc)
+	
+	bind(document, 'keydown', function(event) {
+		var srcBefore;
+		var dstBefore
+		var src = one('#src_screen');
+		var dst = one('#dst_screen');
+		var srcIndex = srcBefore = src.selectedIndex;
+		var dstIndex = dstBefore = dst.selectedIndex;
+		if (event.keyCode==37) srcIndex -= 1;
+		else if (event.keyCode==38) dstIndex -= 1;
+		else if (event.keyCode==39) srcIndex += 1;
+		else if (event.keyCode==40) dstIndex += 1;
+		if (srcIndex<0) srcIndex = 0;
+		if (dstIndex<0) dstIndex = 0;
+		if (srcIndex>src.length-1) srcIndex = src.length-1
+		if (dstIndex>dst.length-1) dstIndex = dst.length-1
+		if (srcIndex!=srcBefore) {
+			src.selectedIndex = srcIndex;
+			changeSrc();
+		}
+		if (dstIndex!=dstBefore) {
+			dst.selectedIndex = dstIndex;
+			changeDst();
+		}
+	})  
+})
+</script>
+<style>
+	body {
+		margin: 1em;
+/*		width: 64ch;*/
+		font-family: sans-serif;
+		font-size: 16px;
+	}
+	fieldset {
+		border: 2px solid lightgray;
+		border-radius: 4px;
+		margin: 1em auto;
+	}
+	legend {
+		font-weight: bold;
+	}
+	strong {
+		margin-left: 8px;
+	}
+	#dst {
+		margin: 1em 0;
+		background-color: black;
+/*		margin: 1em auto;*/
+/*	    position: absolute;
+	    left: 50%;
+	    transform: translateX(-50%);*/
+		display: grid;
+	}
+	#src {
+		background-color: gray;
+		margin: auto;
+		display: grid;
+	}
+	#scale {
+		margin: auto;
+		color: white;
+		white-space: nowrap;
+		text-align: center;
+	}
+	label {
+		white-space: nowrap;
+	}
+	select {
+/*		width: 12ch;*/
+		zoom: 1.001;
+	}
+	input,select,option {
+		font-size: inherit;
+	}
+	input[size="4"] {
+		width: 4ch;
+		text-align: right;
+		margin-right: 4px;
+	}
+	#dst_custom,
+	#src_custom {
+		display: none;
+	}
+	.custom {
+		display: block !important;
+	}
+	.forceredraw { 
+	   transform: translateZ(0); 
+	}
+</style>
+</head>
+<body>
+	<fieldset>
+		<legend>Console</legend>
+		<select id="src_screen">
+			<option>Custom</option>
+			<option>Pokémon mini     (96x64)</option>
+			<option>Lynx             (160x102)</option>
+			<option>Game Boy/Game Gear (160x144)</option>
+			<option>Neo Geo Pocket   (160x152)</option>
+			<option>WonderSwan       (224x144)</option>
+			<option selected>Game Boy Advance (240x160)</option>
+			<option>Nintendo         (256x240)</option>
+			<option>Genesis          (320x224)</option>
+			<option>Super Nintendo   (256x224)</option>
+			<option>PlayStation      (320x240)</option>
+			<option>Virtual Boy      (384x224)</option>
+			<option>Nintendo 64      (320x240)</option>
+			<option>PSP              (480x272)</option>
+			<option>Dreamcast        (640x480)</option>
+		</select>
+		<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
+		<div id="src_custom">
+			<label><strong>Width</strong> <input id="src_width" size=4 value=240>px</label>
+			<label><strong>Height</strong> <input id="src_height" size=4 value=160>px</label>
+		</div>
+	</fieldset>
+	<fieldset>
+		<legend>Screen</legend>
+		<select id="dst_screen">
+			<option>Custom</option>
+			<option>FunKey S   (240x240 1.54")</option>
+			<option>RS-90      (240x160 2.0")</option>
+			<option>Trimui Model S (320x240 2.0")</option>
+			<option>Trimui Smart   (320x240 2.4")</option>
+			<option>RG280M     (320x240 2.8")</option>
+			<option selected>Miyoo Mini (640x480 2.8")</option>
+			<option>RG300      (320x240 3.0")</option>
+			<option>RG300X     (640x480 3.0")</option>
+			<option>Retro Pixel Pocket (720x720 3.1")</option>
+			<option>RG350      (320x240 3.5")</option>
+			<option>RG351      (480x320 3.5")</option>
+			<option>RG350M     (640x480 3.5")</option>
+			<option>Analogue Pocket (1600x1440 3.5")</option>
+			<option>Miyoo P60  (800x480 4.0")</option>
+			<option>KT R1      (1620x1080 4.5")</option>
+			<option>RP3        (1334x750 4.7")</option>
+			<option>RGB10 Max  (854x480 5.0")</option>
+			<option>RG503      (960x544 5.0")</option>
+			<option>RG552      (1920x1152 5.36")</option>
+			<option>WIN600     (1280x720 5.94")</option>
+			<option>Steam Deck (1280x800 7")</option>
+		</select>
+		<div id="dst_custom">
+			<label><strong>Width</strong> <input id="dst_width" size=4 value=640>px</label>
+			<label><strong>Height</strong> <input id="dst_height" size=4 value=480>px</label>
+			<label><strong>Size</strong> <input id="dst_size" size=4 value=2.8>in</label>
+		</div>
+	</fieldset>
+	
+	<div id="dst" class="forceredraw">
+		<div id="src" class="forceredraw">
+			<div id="scale" class="forceredraw"></div>
+		</div>
+	</div>
+	
+	<a href="./">Reset</a> or <a id="share" href="./">Share this combination</a>
+</body>
+</html>

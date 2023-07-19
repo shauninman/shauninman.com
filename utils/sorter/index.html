@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Sorter</title>
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script>
+// based on and including code from http://slimedrippings.tumblr.com/gamefaqssort
+// original game list from http://www.gamefaqs.com/features/bge20_vote
+
+var namMember = [];
+var lstMember = [];
+var parent = [];
+var equal = [];
+var rec = [];
+var cmp1,cmp2;
+var head1,head2;
+var nrec;
+
+var numQuestion;
+var totalSize;
+var finishSize;
+var finishFlag;
+
+function initList(){
+	var n = 0;
+	var mid;
+	var i;
+
+	lstMember[n] = new Array();
+	for (i=0; i<namMember.length; i++) {
+		lstMember[n][i] = i;
+	}
+	parent[n] = -1;
+	totalSize = 0;
+	n++;
+
+	for (i=0; i<lstMember.length; i++) {
+		if(lstMember[i].length>=2) {
+			mid = Math.ceil(lstMember[i].length/2);
+			lstMember[n] = new Array();
+			lstMember[n] = lstMember[i].slice(0,mid);
+			totalSize += lstMember[n].length;
+			parent[n] = i;
+			n++;
+			lstMember[n] = new Array();
+			lstMember[n] = lstMember[i].slice(mid,lstMember[i].length);
+			totalSize += lstMember[n].length;
+			parent[n] = i;
+			n++;
+		}
+	}
+
+	for (i=0; i<namMember.length; i++) {
+		rec[i] = 0;
+	}
+	nrec = 0;
+
+	for (i=0; i<=namMember.length; i++) {
+		equal[i] = -1;
+	}
+
+	cmp1 = lstMember.length-2;
+	cmp2 = lstMember.length-1;
+	head1 = 0;
+	head2 = 0;
+	numQuestion = 1;
+	finishSize = 0;
+	finishFlag = 0;
+}
+function sortList(flag){
+	if (finishFlag==1) return;
+	
+	var i;
+	var str;
+
+	if (flag<0) {
+		rec[nrec] = lstMember[cmp1][head1];
+		head1++;
+		nrec++;
+		finishSize++;
+		while (equal[rec[nrec-1]]!=-1) {
+			rec[nrec] = lstMember[cmp1][head1];
+			head1++;
+			nrec++;
+			finishSize++;
+		}
+	}
+	else if (flag>0) {
+		rec[nrec] = lstMember[cmp2][head2];
+		head2++;
+		nrec++;
+		finishSize++;
+		while (equal[rec[nrec-1]]!=-1) {
+			rec[nrec] = lstMember[cmp2][head2];
+			head2++;
+			nrec++;
+			finishSize++;
+		}
+	}
+	else {
+		rec[nrec] = lstMember[cmp1][head1];
+		head1++;
+		nrec++;
+		finishSize++;
+		while (equal[rec[nrec-1]]!=-1) {
+			rec[nrec] = lstMember[cmp1][head1];
+			head1++;
+			nrec++;
+			finishSize++;
+		}
+		equal[rec[nrec-1]] = lstMember[cmp2][head2];
+		rec[nrec] = lstMember[cmp2][head2];
+		head2++;
+		nrec++;
+		finishSize++;
+		while (equal[rec[nrec-1]]!=-1) {
+			rec[nrec] = lstMember[cmp2][head2];
+			head2++;
+			nrec++;
+			finishSize++;
+		}
+	}
+
+	if (head1<lstMember[cmp1].length && head2==lstMember[cmp2].length) {
+		while (head1<lstMember[cmp1].length){
+			rec[nrec] = lstMember[cmp1][head1];
+			head1++;
+			nrec++;
+			finishSize++;
+		}
+	}
+	else if (head1==lstMember[cmp1].length && head2<lstMember[cmp2].length) {
+		while (head2<lstMember[cmp2].length){
+			rec[nrec] = lstMember[cmp2][head2];
+			head2++;
+			nrec++;
+			finishSize++;
+		}
+	}
+
+	if (head1==lstMember[cmp1].length && head2==lstMember[cmp2].length) {
+		for (i=0; i<lstMember[cmp1].length+lstMember[cmp2].length; i++) {
+			lstMember[parent[cmp1]][i] = rec[i];
+		}
+		lstMember.pop();
+		lstMember.pop();
+		cmp1 = cmp1-2;
+		cmp2 = cmp2-2;
+		head1 = 0;
+		head2 = 0;
+
+		if (head1==0 && head2==0) {
+			for (i=0; i<namMember.length; i++) {
+				rec[i] = 0;
+			}
+			nrec = 0;
+		}
+	}
+
+	if (cmp1<0) {
+		finishFlag = 1;
+		showResult();
+	}
+	else {
+		showImage();
+	}
+}
+function showResult() {
+	var ranking = 1;
+	var sameRank = 1;
+	var html = '';
+	var i;
+
+	html += '<table>';
+	html += '<tr><td>#</td><td>Title</td></tr>';
+
+	for (i=0; i<namMember.length; i++) {
+		html += '<tr><td>'+ranking+'</td><td>'+namMember[lstMember[0][i]]+'</td></tr>';
+		if (i<namMember.length-1) {
+			if (equal[lstMember[0][i]]==lstMember[0][i+1]) {
+				sameRank++;
+			} else {
+				ranking += sameRank;
+				sameRank = 1;
+			}
+		}
+	}
+	html += '</table>';
+	
+	$('#sorter').hide();
+	$('#result').html(html)
+	$('#results').show();
+	
+}
+function showImage() {
+	var percent = finishSize*100/totalSize;
+	$('#progress').html('<div style="width:'+percent+'%;"></div>'+Math.floor(percent)+'%');
+	$('#left').html(namMember[lstMember[cmp1][head1]]);
+	$('#right').html(namMember[lstMember[cmp2][head2]]);
+
+	numQuestion++;
+}
+
+function startSort() {
+	$('#config').hide();
+	namMember = $('#names').val().split('\n');
+	initList();
+	showImage();
+	$('#sorter').show();
+}
+
+var defaultNamMember = [];
+
+$(function() {
+	defaultNamMember = $('#names').val().split('\n');
+	
+	// config
+	$('#start-sort').click(startSort);
+	$('#reset-list').click(function() {
+		if (window.confirm('Are you sure you what to reset the list?')) {
+			$('#names').val(defaultNamMember.join('\n'));
+		}
+	});
+		
+	// sorter
+	$('#left').click(function() {
+		sortList(-1);}
+	);
+	$('#tie').click(function() {
+		sortList(0);}
+	);
+	$('#right').click(function() {
+		sortList(1);}
+	);
+	
+	// results
+	$('#results button').click(function() {
+		$('#results').hide();
+		$('#config').show();
+	});
+	
+	// startSort();
+})
+
+</script>
+<style>
+body {
+	font-family: sans-serif;
+}
+#sorter,#results {
+	display: none;
+}
+
+textarea {
+	margin-bottom: 1em;
+}
+
+td.choices {
+	text-align: center;
+	width: 10em;
+	height: 10em;
+	border: 2px solid black;
+}
+
+#progress div {
+	border-top: 2px solid black;
+}
+
+#result table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	border: 2px solid black;
+	margin-bottom: 1em;
+}
+
+#result td {
+	padding: 0.25em 0.5em;
+}
+#result td:first-child {
+	text-align: right;
+}
+
+#result tr:first-child td {
+	background-color: black;
+	color: white;
+	font-weight: bold;
+}
+
+#result tr:nth-child(even) {
+	background-color: #eee;
+}
+
+</style>
+</head>
+<body>
+	<h1>Sorter</h1>
+	<div id="config">
+		<p>So GameFAQs ran a <a href="http://www.gamefaqs.com/features/bge20">Best. Game Ever.</a> poll. (Because that’s a thing that can be determined.) Then <a href="https://twitter.com/MallowyGoodness">Kiri</a> decided this would be <a href="http://slimedrippings.tumblr.com/gamefaqssort">cooler</a> if we could just sort the games ourselves. She was right, only I’ve never played half of these games so I made the list customizable. Start with the default GameFAQs list or create your own from scratch. Or sort books, films, albums, whatever you have an opinion about.</p>
+		<textarea id="names">Chrono Trigger
+Ratchet &amp; Clank 3
+Dragon Quest VIII
+Persona 3
+Batman: Arkham City
+Mega Man X
+Final Fantasy X
+Half-Life
+Smash Bros. Melee
+Portal
+Pokemon Gold/Silver
+World Ends with You
+Metal Gear Solid 4
+Kingdom Hearts II
+The Last of Us
+Halo 3
+Final Fantasy VI
+Assassin's Creed II
+Paper Mario: TYD
+Tales of Symphonia
+Star Wars: KOTOR
+Xenogears
+Zelda: The Wind Waker
+Pokemon X/Y
+Smash Bros. Wii U
+Planescape: Torment
+Super Mario Galaxy 2
+Mass Effect
+Minecraft
+Halo: Combat Evolved
+Final Fantasy VII
+Journey
+Super Mario Bros. 3
+Age of Empires II
+Pokemon Red/Blue
+Tetris
+Portal 2
+Sonic the Hedgehog 2
+Uncharted 2
+The Walking Dead
+Fallout 3
+Life is Strange
+Undertale
+Mass Effect 3
+GTA: Vice City
+Final Fantasy VIII
+Super Mario World
+Animal Crossing New Leaf
+Skyrim
+Phoenix Wright
+GoldenEye 007
+Diablo II
+Metroid Prime
+Morrowind
+Half-Life 2
+Demon's Souls
+Super Mario 64
+Mario Kart 8
+Final Fantasy Tactics
+Resident Evil 2
+Zelda: Twilight Princess
+Skies of Arcadia
+Persona 4
+999
+Zelda: Ocarina of Time
+Hearthstone
+Suikoden II
+Monster Hunter 4U
+Okami
+Warcraft III
+Final Fantasy IX
+Kingdom Hearts
+Xenoblade Chronicles
+DK Country 2
+Fire Emblem: Awakening
+Super Mario Maker
+Banjo-Kazooie
+Baldur's Gate II
+Castlevania: SOTN
+Phoenix Wright: Trials
+Zelda: A Link to the Past
+Cave Story
+Deus Ex
+Final Fantasy IV
+Metal Gear Solid V
+Perfect Dark
+Dark Souls
+Civilization V
+Super Metroid
+Call of Duty 4
+Super Mario Galaxy
+Dragon Age: Origins
+Bloodborne
+Final Fantasy XII
+Zelda: Majora's Mask
+Valkyria Chronicles
+Grand Theft Auto V
+Shenmue
+Oblivion
+Super Mario RPG
+GTA: San Andreas
+Shovel Knight
+World of Warcraft
+Chrono Cross
+The Witcher 3
+Binding of Isaac Rebirth
+Metal Gear Solid 2
+Resident Evil
+Fallout: New Vegas
+BioShock Infinite
+Resident Evil 4
+Paper Mario
+Metal Gear Solid
+Splatoon
+EarthBound
+Borderlands 2
+Shadow of the Colossus
+Team Fortress 2
+Red Dead Redemption
+Bayonetta 2
+Metal Gear Solid 3
+Mother 3
+BioShock
+Silent Hill 2
+Starcraft
+Destiny
+Mass Effect 2
+Virtue's Last Reward</textarea><br>
+		<button id="start-sort">Start Sorting</button>
+		<button id="reset-list">Reset List</button>
+	</div>
+
+	<table id="sorter">
+		<tr>
+			<td class="choices" id="left"></td>
+			<td class="choices" id="tie">Tie/Indifferent</td>
+			<td class="choices" id="right"></td>
+		</tr>
+		<tr>
+			<td colspan="3"><div id="progress">0%</div></td>
+		</tr>
+	</table>
+
+	<div id="results">
+		<div id="result"></div>
+		<button>Start Over</button>
+	</div>
+</body>
+</html>
