@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Fuzzy Columns</title>
+<style>
+
+body {
+	font-family: monospace;
+}
+p {
+	width: 32em;
+}
+label {
+	width: 16ch;
+	display: inline-block;
+}
+input {
+	font-family: inherit;
+	text-align: right;
+	border-color: transparent;
+	background-color: #eee;
+}
+input[disabled] {
+	background-color: #fff;
+}
+#preview {
+	background-color: #eee;
+	display: inline-block;
+}
+#preview:after {
+	content: "";
+	display: table;
+	clear: both;
+}
+.column,.gutter {
+	float: left;
+	height: 4em;
+	box-sizing: border-box;
+}
+.column {
+	
+}
+.gutter {
+	background-color: #ddd;
+}
+
+</style>
+<script>
+
+var data = {
+	width: 400,
+	columns: 5,
+	columnWidth: 0,
+	gutterWidth: 0,
+	minGutterWidth: 0,
+	gutterThickness: 2,
+};
+
+/*
+	
+	NOTE: this logic is derived from observations 
+	of the results of more naive, brute force logic
+
+	if width/columns is an integer then gutterWidth 
+	can be any multiple of columns (within bounds)
+	
+	if width/columns is not an integer then gutterWidth
+	is (columns - remainder) + any multiple of columns
+	
+*/
+
+function recalculate(c,g) {
+	var columns = data.columns + c;
+	var gutterThickness = data.gutterThickness + g;
+	if (columns<1) columns = 1;
+	if (gutterThickness<0) gutterThickness = 0;
+	
+	var remainder = data.width - Math.floor(data.width / columns) * columns;
+	var minGutterWidth = remainder==0 ? 0 : columns - remainder;
+	var gutterWidth = minGutterWidth + columns * gutterThickness;
+	var columnWidth = (data.width - (columns - 1) * gutterWidth) / columns;
+	
+	// only update data if we're within valid bounds
+	if (columnWidth>0 && columnWidth * columns + (columns - 1) * gutterWidth == data.width) {
+		data.columns = columns;
+		data.gutterThickness = gutterThickness;
+		data.minGutterWidth = minGutterWidth;
+		data.gutterWidth = gutterWidth;
+		data.columnWidth = columnWidth;
+	}
+	else return;
+	
+	// update form values
+	document.getElementById('width').value = data.width;
+	document.getElementById('columns').value = data.columns;
+	document.getElementById('column-width').value = data.columnWidth;
+	document.getElementById('gutter-width').value = data.gutterWidth;
+	
+	// update preview
+	var html = '';
+	for (var i=0; i<data.columns; i++) {
+		if (i>0 && data.gutterWidth>0) {
+			html += '<div class="gutter" style="width:'+data.gutterWidth+'px;"></div>';
+		}
+		html += '<div class="column" style="width:'+data.columnWidth+'px;"></div>';
+	}
+	document.getElementById('preview').innerHTML = html;
+}
+
+function moreColumns() {
+	recalculate(1,0);
+}
+function fewerColumns() {
+	recalculate(-1,0);
+}
+
+function thickerGutters() {
+	recalculate(0,1);
+}
+function thinnerGutters() {
+	recalculate(0,-1);
+}
+
+function setWidth(width) {
+	data.width = parseInt(width);
+	data.gutterThickness = 0;
+	recalculate(0,0);
+}
+
+document.addEventListener('DOMContentLoaded', function(event) {
+	recalculate(0,0);
+});
+
+</script>
+</head>
+<body>
+	<h1>Fuzzy Columns</h1>
+	<p>Enter a width and adjust the number of columns and gutter thickness. Only generates integer values.</p>
+	<p>
+		<label>width</label> <input onchange="setWidth(parseInt(this.value));" id="width" size=5 /><br>
+		<label>columns</label> <input id="columns" size=5 disabled />
+		<button onclick="fewerColumns();">fewer</button>
+		<button onclick="moreColumns();">more</button>
+		<br>
+		<label>column width</label> <input id="column-width" size=5 disabled /><br>
+		<label>gutter width</label> <input id="gutter-width" size=5 disabled />
+		<button onclick="thinnerGutters()">thinner</button>
+		<button onclick="thickerGutters()">thicker</button>
+	</p>
+	<div id="preview"></div>
+</body>
+</html>
