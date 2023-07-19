@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chill</title>
+<!-- #v=<video id> -->
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<style>
+html,body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+</style>
+</head>
+<body>
+<iframe width=100% height=100% id=chill frameborder=0 allow="encrypted-media; picture-in-picture; autoplay;" allowfullscreen></iframe>
+<script>
+	const v = location.hash ? location.hash.replace(/^#v=/,'') : 'jfKfPfyJRdk';
+	const url = `https://www.youtube-nocookie.com/embed/${v}?rel=0&showinfo=0&modestbranding=1`;
+	document.getElementById('chill').src = url;
+</script>
+</body>
+</html>
