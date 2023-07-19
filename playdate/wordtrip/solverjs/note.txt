@@ -1,0 +1,1 @@
+all.json and starter.json are copied from data (will be need to be kept in sync) since Local.app won't reach up into a parent directory, at least, I don't think it will.

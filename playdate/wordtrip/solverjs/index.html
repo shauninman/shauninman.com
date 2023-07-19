@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Word Trip Solver</title>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<style>
+body {
+	font-family: monospace;
+	font-size: 16px;
+	margin: 0;
+	padding: 1em;
+}
+
+select {
+	width: 9ch;
+}
+
+#hidden {
+	display: none;
+}
+
+a {
+	text-decoration: none;
+}
+
+input,select,a {
+	border: none;
+	font-family: monospace;
+	padding: 4px 6px;
+	border-radius: 4px;
+	color: white;
+	background-color: black;
+	cursor: pointer;
+}
+
+input,select,span,li,a {
+	text-transform: uppercase;
+	font-size: inherit;
+}
+
+li {
+	margin: 0.2em 0;
+}
+
+label {
+	display: inline-block;
+}
+label input {
+	display: block;
+}
+
+</style>
+</head>
+<body>
+<p><strong>Word Trip Solver</strong></p>
+
+<form id=solver>
+	<label>From <input maxlength=4 name=from id=from value=WORD /></label>
+	<label>To <input maxlength=4 name=to id=to value=TRIP /></label>
+	<input type=submit value=Solve>
+
+	<pre></pre>
+</form>
+
+<script>
+	var pairs = Object.entries
+	var all,common,solver;
+	
+	class Word {
+		// word		:string
+		// common	:bool
+		// meta		:MetaWord
+	}
+	class WordList {
+		// Word keyed by string
+	}
+	class MetaWord {
+		// chars	:string
+		// words	:array of Words
+		// common	:bool, if words contains any common words	
+	}
+	class MetaList {
+		// MetaWord keyed by string
+	}
+	class Step {
+		// index	:int
+		// meta		:MetaWord
+	}
+	class Solver {
+		// words	:WordList
+		// metas	:MetaList
+		// time		:TODO:
+		
+		constructor() {
+			this.words = new WordList;
+			for (var word of all) {
+				var node = {}; // new Word;
+				node.word = word;
+				node.common = common.includes(word);
+				this.words[word] = node;
+			}
+			common = null;
+			
+			this.metas = new MetaList;
+			for (var word of all) {
+				var chars = Solver.sortWord(word);
+				
+				var node;
+				if (this.metas[chars]) {
+					node = this.metas[chars];
+				}
+				else {
+					node = new MetaWord;
+					node.chars = chars;
+					node.words = [];
+					this.metas[chars] = node;
+				}
+				
+				node.words.push(this.words[word]);
+				if (this.words[word].common) node.common = true;
+				this.metas[word] = node;
+				this.words[word].meta = node;
+			}
+		}
+		
+		// (string):string
+		static sortWord(word) { 
+			var letters = word.split('');
+			letters.sort();
+			return letters.join('');
+		}
+		
+		// (string,string,bool,bool):MetaList
+		getValidCombos(from,to,strict=false,all=false,depth=0) {
+			var sorted = Solver.sortWord(from);
+			var fromChars = from.split('');
+			var toChars = to.split('');
+			
+			var combos = new MetaList;
+			for (var i=0; i<4; i++) {
+				for (var j=0; j<4; j++) {
+					// php passes array by value, js by reference :ragesob:
+					var testChars = [...fromChars]; // fffffuuuuu
+					if (strict && !all && toChars.includes(testChars[i])) continue;
+					
+					testChars[i] = toChars[j];
+					var test = testChars.join('');
+					test = Solver.sortWord(test);
+					if (test==sorted) continue;
+					
+					if (this.metas[test]) {
+						var meta = this.metas[test];
+						if (meta.words.length==1 && meta.words[0].word==from) continue;
+						if (!all && !meta.common) continue;
+						combos[test] = meta;
+					}
+				}
+			}
+			
+			return combos;
+		}
+		
+		// (string,string,bool,bool,array,array,array):array of paths
+		getSolutions(from,to,strict=false,all=false,known=null,path=null,paths=null,depth=0) {
+			var root = depth++==0;
+			
+			// TODO: this never sees the target word...
+			// on the upside the original PHP version had this issue too :sweat
+			
+			if (path) {
+				// path = path.slice();
+
+				var step = new Step;
+				step.index = path.length;
+				step.meta = this.metas[from];
+				path.push(step);
+			}
+			else {
+				known = {};
+				path = [];
+				paths = [];
+			}
+			
+			var combos = this.getValidCombos(from,to,strict,all,depth);
+			for (var [sorted,meta] of pairs(combos)) {
+				if (paths.length>=5000) break; // stuck in loop?
+				if (!all && !meta.common) continue;
+				
+				var arrived = false;
+				for (var word of meta.words) {
+					if (word.word==to) {
+						paths.push([...path]); // fffffuuuuuu
+						arrived = true;
+						break;
+					}
+				}
+				
+				if (known[sorted]) continue;
+				known[sorted] = 1;
+				
+				if (arrived) continue;
+				
+				this.getSolutions(sorted,to,strict,all,{...known},path,paths,depth);
+			}
+			
+			
+			
+			if (!root) path.pop();
+			else return paths;
+		}
+		
+		// (string,string,bool,bool):array
+		solve(from,to,strict=false,all=false) {
+			// TODO: this.time
+			var solutions = this.getSolutions(from,to,strict,all);
+			if (solutions.length==0) solutions = this.getSolutions(from,to,!strict,!all);
+			solutions.sort((a,b)=>{
+				var commonA = 0;
+				var commonB = 0;
+				for (var key in a) if (a[key].meta.common) commonA += 1;
+				for (var key in b) if (b[key].meta.common) commonB += 1;
+				return commonA - commonB;
+			});
+			return solutions;
+		}
+	}
+	
+	fetch('all.json')
+		.then((response) => response.json())
+		.then((data) => { all = data })
+	fetch('starter.json')
+		.then((response) => response.json())
+		.then((data) => { common = data; solver = new Solver; })
+	
+	function $(s) { return document.querySelector(s); }
+	function _(s) { return document.querySelectorAll(s); }
+	
+	$('body').onfocus = function(event) {
+		if ($('#from').value=='') $('#from').focus();
+		else $('#to').focus();
+	};
+
+	$('#from').onclick = function(event) {
+		this.select();
+	};
+	$('#to').onclick = function(event) {
+		this.select();
+	};
+
+	if ($('#from').value=='') $('#from').focus();
+	else $('#to').focus();
+	
+	function refresh(from,to) {
+		$('#from').value = from;
+		$('#to').value = to;
+		$('pre').innerHTML = '';
+		
+		var solutions = solver.solve(from,to);
+		render(from,to,solutions);
+		$('#to').focus();
+	}
+	
+	function render(from,to,solutions) {
+		if (from==to) {
+			$('#to').value = '';
+			return;
+		}
+		
+		var html = '';
+		html += `<p>Found ${solutions.length>0?'some':'zero'} solutions for <span>${from} &gt; ${to}</span>.<p>`;
+		
+		if (!solutions.length) return;
+		solutions = solutions.slice(0,16);
+		
+		var next = {};
+		for (var solution of solutions) {
+			if (!solution.length) {
+				// an empty solution means
+				// to is directly accessible
+				next[to] = 1;
+				break;
+			}
+			var options = solution[0].meta.words;
+			for (var word of options) {
+				next[word.word] = 1;
+			}
+		}
+		next = Object.keys(next);
+		next.sort();
+		
+		html += '<p>Here are a few words to get you started:</p>';
+		html += '<p>'
+		
+		if (next.length) {
+			var options = [];
+			for (var word of next) {
+				word = solver.words[word];
+				options.push((word.common?'*':'') + word.word);
+			}
+			options.sort();
+			next = [];
+			var hasCommon = false;
+			for (var word of options) {
+				var clean = word.replace(/^\*/, '');
+				if (clean!=word) hasCommon = true;
+				else if (hasCommon) break;
+				next.push(clean);
+			}
+			
+			for (var word of next) {
+				word = solver.words[word];
+				html += `<a onclick="refresh('${word.word}','${to}');">`;
+				html += word.word;
+				if (word.common) html += '*';
+				html += '</a> ';
+			}
+		}
+		
+		html += '</p>';
+		html += '<div id=show><a id=click>Click here</a> to show some full solutions.</div>';	
+		html += '<div id=hidden>Here are some of the shortest full solutions:';
+		html += '<ol>';
+		for (var path of solutions) {
+			html += `<li>${from}`;
+			for (var step of path) {
+				html += ' &gt; <select>';
+				var common = false;
+				for (var word of step.meta.words) {
+					if (word.word==from) continue;
+					var select = '';
+					var label = word.word;
+					if (word.common) {
+						label += '*';
+						if (!common) {
+							common = true;
+							select = ' selected';
+						}
+					}
+					html += `<option${select}>${label}</option>`;
+				}
+				html += '</select>';
+			}
+			html += ` &gt; ${to}</li>`;
+		}
+		html += '</ol></div><p>* starter word</p>';
+	
+		$('pre').innerHTML = html;
+		
+		var click = $('#click');
+		if (click!=null) {
+			click.onclick = function(event) {
+				$('#show').style.display = 'none';
+				$('#hidden').style.display = 'block';
+				$('#to').focus();
+			};
+		}
+	}
+	
+	$('form').onsubmit = function(event) {
+		event.preventDefault();
+		
+		var from = $('#from').value.toLowerCase();
+		var to = $('#to').value.toLowerCase();
+		var solutions = solver.solve(from,to);
+		render(from,to,solutions);
+	};
+	
+</script>
+</body>
+</html>
