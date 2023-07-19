@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ratcheteer Hints</title>
+<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<style>
+body {
+	font-family: sans-serif;
+	margin: 0 0 4em;
+	padding: 1em;
+	color: #333;
+	
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+p {
+	margin: 1em 0;
+}
+
+h1 {
+	margin: 0;
+}
+
+dl {
+	margin: 0;
+}
+
+dt {
+	background-color: #eee;
+	padding: 0.25em 0.5em 0.25em 1.5em;
+	margin: 0.25em 0;
+	border-radius: 0.25em;
+	cursor: pointer;
+}
+
+dt:before {
+	display: inline-block;
+	width: 1em;
+	margin-left: -1em;
+	content: '▸';
+}
+
+dt.open:before {
+	content: '▾';
+}
+
+dd {
+	margin: 0;
+	margin-left: calc(1em - 2px);
+	display: none;
+}
+
+dd p {
+	border-left: 2px solid #eee;
+	padding-left: 0.5em;
+}
+
+dd p + p {
+	margin-top: -1em;
+	padding-top: 1em;
+}
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script>
+$(function() {
+	$('dt').click(function(evt) {
+		var dt = $(this);
+		dt.toggleClass('open');
+		var dd = dt.next();
+		dd.toggle();
+	
+		if (dt.hasClass('open')) {
+			if (evt.altKey) {
+				dd.find('dt').addClass('open');
+				dd.find('dd').show();
+			}
+		}
+		else {
+			if (evt.altKey) {
+				dd.find('dt.open').removeClass('open');
+				dd.find('dd').hide();
+			}
+			else {
+				dd.find('> dt.open > dd').hide();
+				dd.find('> dt.open').removeClass('open');
+			}
+		}
+	});
+});
+</script>
+</head>
+<body>
+<h1>Ratcheteer Hints</h1>
+<p>Stuck on something? <a href="https://twitter.com/shauninman">Let me know</a> and I'll add a hint (and/or an answer if you're really stumped).</p>
+<dl>
+	<dt id="one-true-hint">If you could only give me one hint, what would it be?</dt>
+	<dd>
+		<p>Don't forget to crank! :)</p>
+	</dd>
+	
+	<dt>Where do I go next?</dt>
+	<dd>
+		<dl>
+			<dt>Have you learned about the map?</dt>
+			<dd>
+				<p>There is information about the map in a notebook next to Wren in the center of Mechanic Town.</p>
+				<dl>
+					<dt>Have you consulted the map?</dt>
+					<dd>
+						<p>Hold <strong>B</strong> until the tool swapping menu appears. Use the <strong>D-pad</strong> to select <em>Map</em> then release <strong>B</strong>. Gray rooms haven't been visited yet. A flashing white flag represents the next story destination.</p>
+						<dl>
+							<dt>Is there a giant, Nintendo Power-style full game map available?</dt>
+							<dd>
+								<p>There sure is! Warning, this map is chock-full of spoilers (and slightly out of date). <a href="map.png">My body is ready.</a></p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Am I missing the tool required to clear this area?</dt>
+	<dd>
+		<p>If you were able to enter an area then you have all the tools you need to clear that area.</p>
+		<dl>
+			<dt>Is there a specific obstacle in your way?</dt>
+			<dd>
+				<p>Along the way you may encounter optional paths or chests that you do not have the tools to access yet. Any obstacle along the story path can be cleared with your available tools or a new tool hidden somewhere within that area. Keep exploring (and don't forget to come back later for anything you can't reach the first time through)!</p>
+				<dl>
+					<dt>No, seriously, where can I find the Bombs?</dt>
+					<dd>
+						<p>Bombs... Bombs!? That sounds extremely dangerous, especially living underground. One cave-in and it's all over. You will find no bombs in the world of Ratcheteer.</p>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Ore (huh!), what is good for?</dt>
+	<dd>
+		<p>A skilled metalsmith can repair just about anything with enough ore.</p>
+	</dd>
+	
+	<dt>So, in the first area...</dt>
+	<dd>
+		<dl>
+			<dt>About this area's tools...</dt>
+			<dd>
+				<dl>
+					<dt>Remind me how to use the first tool?</dt>
+					<dd>
+						<p>Press <strong>A</strong> to turn the Crank Lantern on and off. Turn the <strong>crank</strong> to power it up.</p>
+					</dd>
+					
+					<dt>Remind me how to use the second tool?</dt>
+					<dd>
+						<p>Press <strong>A</strong> to slash the Wrench Sword. Turn the <strong>crank</strong> to give enemies and equipment a tune up.</p>
+					</dd>
+					
+					<dt>How does the optional tool work?</dt>
+					<dd>
+						<p>The Hand Lens is a passive item that when equipped grants an improved awareness of your surroundings (in the form of on-screen icons indicating new dialog or uninspected points of interest in the current room). It also lets you read text that is otherwise too small to read.</p>
+					</dd>
+				</dl>
+			</dd>
+			<dt>Where is the Power Plant?</dt>
+			<dd>
+				<p>See <em>Where do I go next?</em> above.</p>
+				<dl>
+					<dt>Still stuck? Here are directions to the Power Plant.</dt>
+					<dd>
+						<p>Go north from the bridge out of Mechanic Town (where you received the Power Plant Key from Chess, the exit is north-northwest). You will go through a room with slimes (slash through a stalagmite to the east, the exit is north-northeast), across a winding path over a pit (the exit is north-northwest), through a room with two bats (the exit is east), finally arriving at the Power Plant.</p>
+					</dd>
+				</dl>
+			</dd>
+	
+			<dt>How do I turn the turnstiles?</dt>
+			<dd>
+				<dl>
+					<dt>Are you standing on the turnstile?</dt>
+					<dd>
+						<p>As a safety precaution, turnstiles will not turn while you are standing on them.</p>
+					</dd>
+			
+					<dt>Are you just slashing at the nut?</dt>
+					<dd>
+						<p>You really need to wind-up and swing. Put some elbow grease into it!</p>
+						<dl>
+							<dt>Still stuck? Here's exactly how to do it.</dt>
+							<dd>
+								<p>Make sure you're not standing on the turnstile and that the Wrench Sword is your active tool. Face the turnstile's nut and crank to spin-slash. That will rotate the turnstile 90 degrees clockwise. Continue cranking until the turnstile is in the desired position.</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+	
+			<dt>How do I defeat the boss?</dt>
+			<dd>
+				<p>A good approach to any boss is to first figure out how to avoid its attacks, then focus on trying any newly acquired abilities until you discover a weakness you can exploit.</p>
+				<dl>
+					<dt>Are you just slashing at the eye?</dt>
+					<dd>
+						<p>That just seems to be scaring it away. If only there was a way to draw it out of its hole...</p>
+						<dl>
+							<dt>Do you have any other tools you could try?</dt>
+							<dd>
+								<p>Remember, nothing likes having a bright light shined directly in its eye(s).</p>
+								<dl>
+									<dt>Still stuck? Here's exactly how to defeat it.</dt>
+									<dd>
+										<p>Make sure the Crank Lantern is your active tool, crank it to full brightness and switch back to the Wrench Sword. Shine the light into the creature's eye while also dodging the spikes shot from its tail. Do not slash at the eye. It will grow increasingly agitated and eventually disappear only to leap out of another hole. When it does, first position yourself out of its path then slash at it before it descends into another hole. Repeat this sequence of actions two more times. You can do it!</p>
+									</dd>
+								</dl>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	
+	<dt>But, in the second area...</dt>
+	<dd>
+		<dl>
+			<dt>About this area's tool...</dt>
+			<dd>
+				<p>Press <strong>A</strong> to jump. While airborne your other tool will swap in automatically and back out when you land.
+			</dd>
+			<dt>Where is the Plant key?</dt>
+			<dd>
+				<p>The master mechanic responsible for the Power Plant had that key, so it stands to reason that the master mechanic of the Water Treatment Plant would have theirs.</p>
+				<dl>
+					<dt>Where is the Water Treatment Plant's master mechanic?</dt>
+					<dd>
+						<p>The town outside the Water Treatment Plant appears to be abandonned but maybe its mechanics left a note.</p>
+						<dl>
+							<dt>Still stuck? Here's exactly where to find her.</dt>
+							<dd>
+								<p>A few steps south of the Community Center in the Abandonned Town is a single stalagmite concealing a path that snakes counter clockwise around the eastern ravine to a cave where the Water Treatment Plant's master mechanic and her people are hiding out.</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+			<dt>How do I defeat the boss?</dt>
+			<dd>
+				<p>A good approach to any boss is to first figure out how to avoid its attacks, then focus on trying any newly acquired abilities until you discover a weakness you can exploit.</p>
+				<dl>
+					<dt>Do its attacks seem unavoidable?</dt>
+					<dd>
+						<p>That shockwave is intense but you can't feel the ground shake if you're not standing on it.</p>
+					</dd>
+					<dt>Do your attacks seem ineffective?</dt>
+					<dd>
+						<p>Those legs might seem like an easy target but they look pretty sturdy. You have to set your sights a little higher.</p>
+					</dd>
+					<dt>Having trouble switching tools while airborne?</dt>
+					<dd>
+						<p>You don't have to! Certain backup tools, including the Wrench Sword, will automatically swap in when jumping and back out upon landing, all without having to press <strong>B</strong>. That means you can just press <strong>A</strong> to jump and then press <strong>A</strong> again in the air to slash.</p>
+						<dl>
+							<dt>Still stuck? Here's exactly how to defeat it.</dt>
+							<dd>
+								<p>Make sure the Jump Spring is your active tool and the Wrench Sword is your backup. There is a spotlight illuminating the center of the room so the Crank Lantern isn't necessary. Press <strong>A</strong> to jump just before a shockwave is about to hit you and it will pass safely beneath you. The timing might be easier with the vertical shockwaves so try to position yourself to the left or right of the boss instead of above or below it. When the boss is in the air keep an eye on its shadow to see where it will land. Try to move to the opposite side of the room so you have more time to react to the resulting shockwaves. After a few shockwaves it will stomp towards you. This is a good time to close the distance, jump (up, not forward) by pressing <strong>A</strong>, and then press <strong>A</strong> again to perform an air slash, right between its legs. It takes 6 hits and you have time to get in two (three if you're quick) air slashes between each of its assaults. If you're feeling confident, you can try air slashing while jumping over the shockwaves to chip away mid-assault. I believe in you!</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	
+	<dt>Okay, in the third area...</dt>
+	<dd>
+		<dl>
+			<dt>About this area's tool...</dt>
+			<dd>
+				<p>Hold <strong>A</strong> to guard and deflect rushing water. Turn the <strong>crank</strong> to drill crumbling walls and enemies. In a pinch, it can also be used to turn a nut.</p>
+			</dd>
+			
+			<dt>How do I get past an open water main?</dt>
+			<dd>
+				<p>There are two ways to harness rushing water.</p>
+				<dl>
+					<dt>Is the water pushing you forward into a pit?</dt>
+					<dd>
+						<p>The water's momentum can allow you to clear distances impossible with an unassisted jump. Just step into the steam and then jump. Facing perpendicular to the jet will increase your jump distance a little but facing the same direction the jet is gushing can rocket you halfway across a room.</p>
+					</dd>
+					<dt>Is the water preventing you from moving forward?</dt>
+					<dd>
+						<p>If you can find a way to deflect the water you can slowly advance on an oncoming jet or sidestep across a stream.</p>
+					</dd>
+				</dl>
+			</dd>
+			
+			<dt>How do I reach the east side of the Cryo Colony?</dt>
+			<dd>
+				<p>You can find a tool inside the Cryo Colony behind a locked door that will assist with crossing open water mains.</p>
+				<dl>
+					<dt>Where can I find a key?</dt>
+					<dd>
+						<p>There is a staircase hiding in plain sight. You may need to take a leap of faith.</p>
+						<dl>
+							<dt>Still stuck? Here are directions to the key.</dt>
+							<dd>
+								<p>From the entrance go north then west. Drop down into the room with the two invulnerable patrollers and go north. Hop across the pits to the east. The stairs are on the left side of the next room, across a pit you can easily jump over.</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+			
+			<dt>How do I defeat the boss?</dt>
+			<dd>
+				<p>A good approach to any boss is to first figure out how to avoid its attacks, then focus on trying any newly acquired abilities until you discover a weakness you can exploit.</p>
+				<dl>
+					<dt>Is the constant barrage overwhelming?</dt>
+					<dd>
+						<p>Break it down. Only one of the attacks is actually targeting you. The other is just noise.</p>
+						<dl>
+							<dt>How do I avoid the spin attack?</dt>
+							<dd>
+								<p>If you hug a wall you can turn a two dimensional problem into a one dimensional problem.</p>
+							</dd>
+							<dt>How do I avoid the falling rocks?</dt>
+							<dd>
+								<p>A shadow shows where the next rock will land. Don't be there when it does.</p>
+							</dd>
+						</dl>
+					</dd>
+					
+					<dt>Does slashing seem ineffective?</dt>
+					<dd>
+						<p>Sometimes the best offense is a good recently acquired defensive tool.</p>
+					</dd>
+					
+					<dt>Still stuck? Here's exactly how to defeat it.</dt>
+					<dd>
+						<p>Before entering the boss room, make the Drill Shield your active tool and position yourself in the middle of the doorway. Once the battle begins rush the boss and crank to drill into it before its offensive begins. If you've lined yourself up well you might be able to stun lock it by advancing and drilling again before it can retaliate. The stun lock will be more difficult to maintain if you were slightly off center and it recoils to the left or right but if you can quickly realign yourself you might be able to keep it trapped.</p>
+						<p>If it breaks free it will begin to bounce around the room following a diagonal path, starting in your direction. If you're down and to the left try moving down and to the right (or vice versa) to avoid its initial charge. Whenever it hits a wall (but not a column) a large rock will fall from the sky. A shadow appears where that rock will land, usually right on top of you. When it lands it will explode into four smaller rocks that, like the boss itself, follow a diagonal path. Don't be there when it lands. Move in any cardinal direction (just not diagonally) that won't put you in the boss's path. When the boss finally slows, try to stun lock it again. Six drills will defeat it.</p>
+						<dl>
+							<dt>Six times!! Really?</dt>
+							<dd>
+								<p>Maybe! You might have noted a similarity between the boss and the punchdrunk golems patrolling the Cryo Colony. You could think of the boss as the pugilist's parent and the more of its children you dispatch, the angier it gets. Two of the golems must be cleared to unlock the room they're in, but the one you encounter on the first floor is easily avoided. If spared, the boss will only require four drills to fell.</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Whoa, in the fourth area...</dt>
+	<dd>
+		<dl>
+			<dt>About this area's tool...</dt>
+			<dd>
+				<p>Press <strong>A</strong> while jumping to glide. Press again to drop like a rock and shake off any unwanted passengers or unstick stuck Shutter Steps. Turn the <strong>crank</strong> to steer on the Snowcean. </p>
+			</dd>
+			<dt>Why can't I climb these stairs?</dt>
+			<dd>
+				<p>Like the Freezer mechanics, the Lifers on the surface have had to adapt technology to keep out unwanted pests. Their solution, Shutter Steps, were installed ages ago and as such have rusted shut, requiring a good jolt to open.</p>
+			</dd>
+			<dt>How do I defeat the boss?</dt>
+			<dd>
+				<p>A good approach to any boss is to first figure out how to avoid its attacks, then focus on trying any newly acquired abilities until you discover a weakness you can exploit.</p>
+				<dl>
+					<dt>It's so small!</dt>
+					<dd>
+						<p>Squash it!</p>
+					</dd>
+					<dt>Why do I keep getting hurt while on the center platform?</dt>
+					<dd>
+						<p>The boss itself is too light to trigger the spike pressure plate designed to keep pests out of the food stores. After stomping the boss it's best to glide to safety and regroup for a moment before your next assault.</p>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	<dt>Now in the fifth area...</dt>
+	<dd>
+		<dl>
+			<dt>How do I navigate the Snowcean?</dt>
+			<dd>
+				<p>Some unlikely allies can provide directions to points of interest. In your travels you might even stumble across a message in a bottle.</p>
+				<dl>
+					<dt>Can I just brute force it?</dt>
+					<dd>
+						<p>You sure can! (Many more people than I expected would did and seem to have enjoyed doing it.) There might even be some benefit to teasing it out yourself...</p>
+						<dl>
+							<dt>Still lost? Here are the exact directions...</dt>
+							<dd>
+								<dl>
+									<dt>to the first destination.</dt>
+									<dd>
+										<p>From the open Snowcean, sail east, north, west, north, east, north, east, and finally north.</p>
+									</dd>
+									<dt>to the second destination.</dt>
+									<dd>
+										<p>From the open Snowcean, sail south, east, south, west, south, east, north, and finally east.</p>
+									</dd>
+									<dt>to the third, optional destination.</dt>
+									<dd>
+										<p>Sorry, you're on your own with this one. <span title="Search the wells high and low for clues.">You'd do well to search high and low for clues.</span></p>
+									</dd>
+									<dt>and points beyond.</dt>
+									<dd>
+										<p>You may find something of value the first time you go off course in any of the four cardinal directions.</p>
+									</dd>
+								</dl>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+			<dt>About this area's tool...</dt>
+			<dd>
+				<p>Press <strong>A</strong> to take it on and off. Turn the <strong>crank</strong> to build speed then press any direction on the <strong>d-pad</strong> to dash.</p>
+			</dd>
+			<dt>How do I bypass the rail locks?</dt>
+			<dd>
+				<p>Everything you need to release the lock is present in the room with the lock but it may not be accessible if you're already up on the rail.</p>
+				<dl>
+					<dt>How do I get down from a rail?</dt>
+					<dd>Please refer to the <a href="#one-true-hint">one true hint</a> above.</dd>
+					<dt>Can you give me a hint?</dt>
+					<dd>
+						<p>X marks the spot. No, really!</p>
+						<dl>
+							<dt>...</dt>
+							<dd>
+								<p>Spoil sport. Use the Roll Armor to dash into the froghorn in each room that contains a rail lock.</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+			<dt>How do I defeat the boss?</dt>
+			<dd>
+				<p>A good approach to any boss is to first figure out how to avoid its attacks, then focus on trying any newly acquired abilities until you discover a weakness you can exploit.</p>
+				<dl>
+					<dt>How do I even hurt it?</dt>
+					<dd>
+						<p>There is a one of a kind enemy with a very specific weakness earlier in the Mines that behaves similarly to this boss. The same technique will advance the boss to its next phase.</p>
+						<dl>
+							<dt>Now what?</dt>
+							<dd>
+								<p>You know what they say, "The way to a boss's heart is through a hole in the Mines wall." Perhaps in some dashing Roll Armor?</p>
+							</dd>
+						</dl>
+					</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+	<dt>And in the final area?</dt>
+	<dd>
+		<dl>
+			<dt>How do I destroy the drones?</dt>
+			<dd>
+				<p>Their flight pattern is slow and predictable and centered on you. Don't you have a tool (perhaps recently acquired) you could train on them while they make their approach?</p>
+			</dd>
+		</dl>
+	</dd>
+</dl>
+<p>Tip: hold option/alt while clicking a hint to expand/collapse all of its nested hints too.</p>
+</body>
+</html>
+
+<!-- 
+Shh, it's a secret to everybody.
+ 
+Ratcheteer has a secret REDACTED rush mode 
+plus codes to start fluent in REDACTED 
+and with a little REDACTED companion
+-->

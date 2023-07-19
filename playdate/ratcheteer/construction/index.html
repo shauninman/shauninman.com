@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Ratcheteer Construction</title>
+<style>
+body {
+	font-family: sans-serif;
+}
+img {
+	display: block;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: -moz-crisp-edges;
+	-ms-interpolation-mode: nearest-neighbor;
+	margin: 8px 0;
+	zoom: 2;
+}
+strong {
+	text-transform: capitalize;
+}
+/*strong:after {
+	content: '▐▐ ';
+	line-height: 1;
+	opacity: 0.5;
+	vertical-align: middle;
+	height: 14px;
+	display: inline-block;
+	letter-spacing: -2px;
+	overflow: hidden;
+	padding-right: 4px;
+}
+body.playing strong:after {
+	content: '▶';
+	padding-left: 4px;
+}*/
+
+span {
+	display: block;
+}
+em {
+	font-style: normal;
+	font-weight: bold;
+	font-size: 0.7em;
+}
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+<script>
+var data = [
+	{file:'1-town', frames:13},
+	{file:'2-power-plant', frames:15},
+	{file:'3-caverns', frames:25},
+	{file:'4-water-plant', frames:21},
+	{file:'5-tunnels', frames:29},
+	{file:'6-cryo-colony', frames:35},
+	{file:'7-surface', frames:35},
+	{file:'8-greenhouse', frames:24},
+	{file:'9-snowcean', frames:14},
+	{file:'10-mines', frames:26},
+	{file:'11-crater', frames:8},
+];
+var map = 0
+var frame = 2
+var frames = data[map].frames;
+
+function updateName() {
+	var n = data[map].file.replace(/[0-9]+\-/, '').replace('-', ' ');
+	document.getElementById('name').innerHTML = n;
+}
+
+function updateImage() {
+	var i = new Image();
+	i.src = 'frames/' + data[map].file + '-' + frame + '.png';
+	console.log(data[map].file + '-' + frame);
+	i.onload = function() {
+		var img = document.getElementById('frame');
+		img.src = i.src
+		img.width = i.width/2;
+		img.height = i.height/2;
+	};
+}
+
+var auto = null;
+function pause() {
+	document.body.classList.remove('playing');
+	window.clearInterval(auto);
+	auto = null;
+}
+function play() {
+	document.body.classList.add('playing');
+	if (frame==frames) {
+		frame = 2;
+		updateImage();
+	}
+	auto = window.setInterval(function() {
+		if (frame==frames) return pause();
+		
+		if (frame < frames) {
+			frame += 1;
+			updateImage();
+		}
+	}, 1000);
+}
+
+$(function() {
+	updateName();
+	updateImage();
+	
+	$('body').on('keydown', function(e) {
+		var key = e.keyCode;
+		
+		var oldMap = map
+		var oldFrame = frame
+		switch(key) {
+		case 32: // space
+			if (auto) pause();
+			else play();
+			e.preventDefault();
+			return;
+			break;
+		case 37: // left
+			frame--;
+			break;
+		case 39: // right
+			frame++;
+			break;
+			
+		case 38: // up
+			map--;
+			break;
+		case 40: // down
+			map++;
+			break; 
+		}
+		
+		if (map != oldMap) {
+			pause();
+			if (map < 0) {
+				map += data.length;
+			}
+			else if (map >= data.length) {
+				map -= data.length;
+			}
+			frame = 2
+			frames = data[map].frames
+			updateName();
+		}
+		else if (frame != oldFrame) {
+			pause();
+			// - 1 skips first blank frame
+			if (frame < 2) {
+				frame += frames - 1
+			}
+			else if (frame > frames) {
+				frame -= frames - 1
+			}
+		}
+		else {
+			return;
+		}
+		
+		e.preventDefault();
+		updateImage();
+	});
+});
+</script>
+</head>
+<body>
+	<strong id="name"></strong>
+	<img src="frames/1-town-1.png" id="frame">
+	<span>&uarr; or &darr; to change maps</span>
+	<span>&larr; or &rarr; to change frame</span>
+	<span><em>SPACE</em> to play/pause</span>
+</body>
+</html>
