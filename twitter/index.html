@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+		@shauninman's tweets
+	</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="wrapper">
+		<div class="flex-wrap">
+			<h1>@shauninman's tweets</h1>
+			<div class="meta">
+				<p>
+					Dad, Designer, Developer.<br>
+					Currently <a href="https://twitter.com/panic">@panic</a> + <a href="https://twitter.com/playdate">@playdate</a> + Pulp.<br>
+					Formerly <a href="http://retrogamecrunch.com">retrogamecrunch.com</a>.<br>
+				</p>
+				<p>
+					<span class="join_date">Joined Twitter January 2008,</span> <span class="left_date">left August 2023.</span>
+				</p>
+			</div>
+				<p class=credit>
+					Generated with Darius Kazemi's <a href="https://tinysubversions.com/twitter-archive/make-your-own/">Twitter Archive</a> and then heavily (and hastily) tweaked.
+				</p>
+			<div class="tweet">
+				<p id="tabs">
+					<button class="tab" id="browse-tab" onclick="browseTab()">Browse</button> <button class="tab active" id="search-tab" onclick="searchTab()">Search</button>
+				</p>
+				<p id="loading">
+					Loading search...
+				</p>
+				<div id="search" hidden="">
+					<input id="search-input" type="search">
+					<div id="sorting">
+						<button class="sort-button" onclick="sortResults('most-relevant')">Most relevant</button> | 
+						<button class="sort-button" onclick="sortResults('oldest-first')">Oldest first</button> | 
+						<button class="sort-button" onclick="sortResults('newest-first')">Newest first</button> | 
+						<button class="sort-button" onclick="sortResults('most-popular')">Most popular</button>
+					<!-- <label><input type=checkbox id=search-media> Media only</label> -->
+					</div>
+					<div id="output"></div>
+				</div>
+				<div id="browse" hidden="">
+					<div id="browse-sort">
+						<button class="sort-button" onclick="sortResults('oldest-first-browse')">Oldest first</button> | 
+						<button class="sort-button" onclick="sortResults('newest-first-browse')">Newest first</button> | 
+						<button class="sort-button" onclick="sortResults('most-popular-browse')">Most popular</button>
+					<!-- <label><input type=checkbox id=browse-media> Media only</label> -->
+					</div>
+					<p id="paging">
+						Page <input id="page-num" type="number"> of <span id="page-total">...</span>
+					</p>
+					<div id="browse-output"></div>
+				</div>
+			</div><!-- .tweet -->
+		</div><!-- .flex-wrap -->
+	</div><!-- .wrapper -->
+</body>
+<script src="searchDocuments.js"></script> 
+<script src="https://cdn.jsdelivr.net/gh/nextapps-de/flexsearch@0.7.31/dist/flexsearch.bundle.js"></script> 
+<script src="app.js"></script>
+</html>
