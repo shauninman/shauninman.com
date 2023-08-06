@@ -42,12 +42,14 @@ button {
 }
 
 .tweet {
-	width: 480px;
+	width: 100%;
+	max-width: 480px;
     font-family: sans-serif;
 }
 
 article.tweet + article.tweet {
-	width: 460px;
+	width: 100%;
+	max-width: 460px;
 	padding-left: 16px;
 	border-left: 4px solid #eee;
 }
@@ -134,13 +136,13 @@ article.tweet + article.tweet {
 .child {
   margin-top: 16px;
   margin-left: 64px;
-  max-width: calc(600px - 64px);
+  max-width: calc(480px - 64px);
   background-color: white;
 }
 .parent {
   margin-bottom: 16px;
   margin-right: 64px;
-  max-width: calc(600px - 64px);
+  max-width: calc(480px - 64px);
   background-color: white;
 }
 
