@@ -180,5 +180,11 @@ function renderBrowse() {
   // document.getElementById('browse-output').innerHTML += '<a href="#tabs">top &uarr;</a>';
 }
 
+document.addEventListener('click', function(event) {
+	if (event.target.classList.contains('full_text')) {
+		event.target.parentNode.querySelector('.permalink').click();
+	}
+});
+
 renderBrowse();
 browseTab();
