@@ -124,7 +124,6 @@ function changePage(dir) {
 }
 
 function renderPagination(id) {
-	console.log(page)
 	var node = document.getElementById(id);
 	node.innerHTML += '<p>';
 	if (id!='output' && page>1) node.innerHTML += `<a href="#tabs" onclick="changePage(-1);">&larr; Previous</a> `;
