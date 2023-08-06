@@ -104,7 +104,7 @@ document.getElementById('page-num').min = 1;
 function renderItem(item) {
 	var full_text = item.full_text
 		.replace(/([^>"])(http[^\s]+)/, '$1<a href="$2">$2</a>')	
-		.replace(/@([a-z0-9]+)/gi, '<a href="https://twitter.com/$1">@$1</a>');
+		.replace(/@([a-z0-9_]+)/gi, '<a href="https://twitter.com/$1">@$1</a>');
 	return `<div class="search_item">
   	    <p class="display_name">Shaun Inman</p>
   	    <p class="user_name">@shauninman</p>
