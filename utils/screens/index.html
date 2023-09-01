@@ -131,6 +131,7 @@ function recalc() {
 	var sub_pixel_width = parseInt(one('#src_width').value)
 	var sub_pixel_height = parseInt(one('#src_height').value)
 	var integer_scaling = one('#src_nn').checked
+	var cropped = one('#src_crop').checked
 
 	if (isNaN(pixel_width) || isNaN(pixel_height) || isNaN(inch_diagonal) || isNaN(sub_pixel_width) || isNaN(sub_pixel_height)) return;
 	if (pixel_width==0 || pixel_height==0 || inch_diagonal==0 || sub_pixel_width==0 || sub_pixel_height==0) return;
@@ -152,7 +153,9 @@ function recalc() {
 		sub_scale_y = Math.floor(sub_scale_y)
 	}
 
-	var sub_scale = sub_scale_x < sub_scale_y ? sub_scale_x : sub_scale_y
+	var sub_scale
+	if (cropped) sub_scale = sub_scale_y < sub_scale_x ? sub_scale_x : sub_scale_y
+	else         sub_scale = sub_scale_x < sub_scale_y ? sub_scale_x : sub_scale_y
 
 	var scaled_pixel_width = sub_pixel_width * sub_scale
 	var scaled_pixel_height = sub_pixel_height * sub_scale
@@ -170,6 +173,14 @@ function recalc() {
 	var src = one('#src')
 	src.style.width  = sub_inch_width+'in'
 	src.style.height = sub_inch_height+'in'
+	
+	var x = ((inch_width - sub_inch_width) / 2)
+	var y = ((inch_height - sub_inch_height) / 2)
+	src.style.top = y+'in'
+	src.style.left = x+'in'
+		
+	// if (x<0) dst.style.marginLeft = -x+'in'
+	// else     dst.style.marginLeft = 0
 	
 	var scl = one('#scale');
 	if (sub_inch_diagonal.toFixed(1)==0) scl.innerHTML = ''
@@ -332,7 +343,6 @@ ready(function() {
 <style>
 	body {
 		margin: 1em;
-/*		width: 64ch;*/
 		font-family: sans-serif;
 		font-size: 16px;
 	}
@@ -350,15 +360,11 @@ ready(function() {
 	#dst {
 		margin: 1em 0;
 		background-color: black;
-/*		margin: 1em auto;*/
-/*	    position: absolute;
-	    left: 50%;
-	    transform: translateX(-50%);*/
-		display: grid;
+		position: relative;
 	}
 	#src {
-		background-color: gray;
-		margin: auto;
+		position: absolute;
+		background-color: rgba(128,128,128,0.75);
 		display: grid;
 	}
 	#scale {
@@ -371,7 +377,6 @@ ready(function() {
 		white-space: nowrap;
 	}
 	select {
-/*		width: 12ch;*/
 		zoom: 1.001;
 	}
 	input,select,option {
@@ -418,6 +423,7 @@ ready(function() {
 			<option>Dreamcast        (640x480)</option>
 		</select>
 		<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
+		<label><strong>Crop Overscan</strong> <input id="src_crop" type="checkbox"></label>
 		<div id="src_custom">
 			<label><strong>Width</strong> <input id="src_width" size=4 value=240>px</label>
 			<label><strong>Height</strong> <input id="src_height" size=4 value=160>px</label>
