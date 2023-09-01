@@ -174,17 +174,24 @@ function recalc() {
 	src.style.width  = sub_inch_width+'in'
 	src.style.height = sub_inch_height+'in'
 	
-	var x = ((inch_width - sub_inch_width) / 2)
-	var y = ((inch_height - sub_inch_height) / 2)
-	src.style.top = y+'in'
-	src.style.left = x+'in'
+	var inch_ox = ((inch_width - sub_inch_width) / 2)
+	var inch_oy = ((inch_height - sub_inch_height) / 2)
+	src.style.top = inch_oy+'in'
+	src.style.left = inch_ox+'in'
 		
-	// if (x<0) dst.style.marginLeft = -x+'in'
-	// else     dst.style.marginLeft = 0
-	
 	var scl = one('#scale');
-	if (sub_inch_diagonal.toFixed(1)==0) scl.innerHTML = ''
-	else scl.innerHTML = `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`
+	var html = ''
+	if (sub_inch_diagonal.toFixed(1)>0) html += `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`
+	if (cropped && (inch_ox<0 || inch_oy<0)) {
+		var ox = (pixel_width-scaled_pixel_width) / 2
+		var oy = (pixel_height-scaled_pixel_height) / 2
+		ox = Math.ceil(ox/sub_scale)
+		oy = Math.ceil(oy/sub_scale)
+		ox = ox>0 ? 0 : -ox
+		oy = oy>0 ? 0 : -oy
+		if (ox!=0 || oy!=0) html += `<br>cropped: ${ox},${oy}`
+	}
+	scl.innerHTML = html
 	
 	var hash = {};
 	each('input,select', function(i,node) {
