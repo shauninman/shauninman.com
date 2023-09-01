@@ -189,7 +189,7 @@ function recalc() {
 		oy = Math.ceil(oy/sub_scale)
 		ox = ox>0 ? 0 : -ox
 		oy = oy>0 ? 0 : -oy
-		if (ox!=0 || oy!=0) html += `<br>cropped: ${ox},${oy}`
+		if (ox!=0 || oy!=0) html += `<br>(cropped: ${ox},${oy})`
 	}
 	scl.innerHTML = html
 	
@@ -212,25 +212,26 @@ ready(function() {
 		var object = {};
 		for (var i=0; i<defaults.length; i++) {
 			var pair = defaults[i].split(':') 
-			object[pair[0]] = pair[1];
+			object[pair[0]] = parseFloat(pair[1]);
 		}
 		for (var key in object) {
 			var node = one(`#${key}`);
 			if (node.tagName=='SELECT') {
 				// index can change with additions, match on resolution when that happens
+				// TODO: this doesn't always match known screens correctly
 				node.selectedIndex = parseInt(object[key]);
 				if (key.match(/^src_/)) {
 					var n = node.value.match(/\(([0-9]+)x([0-9]+)\)/);
-					var nw = n[1];
-					var nh = n[2];
+					var nw = parseFloat(n[1]);
+					var nh = parseFloat(n[2]);
 					var w = object.src_width;
 					var h = object.src_height;
 					if (w!=nw || h!=nh) {
 						var found = false;
 						for (var i=1; i<node.length; i++) {
 							var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\)/);
-							var ow = o[1];
-							var oh = o[2];
+							var ow = parseFloat(o[1]);
+							var oh = parseFloat(o[2]);
 							if (ow==w && oh==h) {
 								found = true;
 								node.selectedIndex = i;
@@ -244,10 +245,9 @@ ready(function() {
 				}
 				else if (node.value!='Custom') {
 					var n = node.value.match(/\(([0-9]+)x([0-9]+)\s+([0-9.]+)"\)/)
-					print(node.value, n)
-					var nw = n[1]
-					var nh = n[2]
-					var ns = n[3]
+					var nw = parseFloat(n[1])
+					var nh = parseFloat(n[2])
+					var ns = parseFloat(n[3])
 					var w = object.dst_width;
 					var h = object.dst_height;
 					var s = object.dst_size;
@@ -255,11 +255,10 @@ ready(function() {
 						var found = false;
 						for (var i=1; i<node.length; i++) {
 							var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\s+([0-9.]+)"\)/)
-							print(o)
 							
-							var ow = o[1];
-							var oh = o[2];
-							var os = o[3];
+							var ow = parseFloat(o[1]);
+							var oh = parseFloat(o[2]);
+							var os = parseFloat(o[3]);
 							if (ow==w && oh==h && os==s) {
 								found = true;
 								node.selectedIndex = i;
