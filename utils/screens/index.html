@@ -449,30 +449,42 @@ ready(function() {
 		<legend>Screen</legend>
 		<select id="dst_screen">
 			<option>Custom</option>
-			<option>FunKey S   (240x240 1.54")</option>
-			<option>RS-90      (240x160 2.0")</option>
-			<option>Trimui Model S (320x240 2.0")</option>
-			<option>Trimui Smart   (320x240 2.4")</option>
-			<option>RG280M     (320x240 2.8")</option>
-			<option selected>Miyoo Mini (640x480 2.8")</option>
-			<option>RG300      (320x240 3.0")</option>
-			<option>RG300X     (640x480 3.0")</option>
-			<option>Retro Pixel Pocket (720x720 3.1")</option>
-			<option>RG350      (320x240 3.5")</option>
-			<option>RG351      (480x320 3.5")</option>
-			<option>RG350M     (640x480 3.5")</option>
-			<option>Analogue Pocket (1600x1440 3.5")</option>
-			<option>RG405M     (640x480 4.0")</option>
-			<option>RGB30      (720x720 4.0")</option>
-			<option>Miyoo P60  (800x480 4.0")</option>
-			<option>KT R1      (1620x1080 4.5")</option>
-			<option>RP3        (1334x750 4.7")</option>
-			<option>Trimui Smart Pro (1280x720 4.96")</option>
-			<option>RGB10 Max  (854x480 5.0")</option>
-			<option>RG503      (960x544 5.0")</option>
-			<option>RG552      (1920x1152 5.36")</option>
-			<option>WIN600     (1280x720 5.94")</option>
-			<option>Steam Deck (1280x800 7")</option>
+			<optgroup label="1:1">
+				<option>FunKey S   (240x240 1.54")</option>
+				<option>Retro Pixel Pocket (720x720 3.1")</option>
+				<option>RGB30      (720x720 4.0")</option>
+			</optgroup>
+			<optgroup label="3:2">
+				<option>RS-90      (240x160 2.0")</option>
+				<option>RG351      (480x320 3.5")</option>
+				<option>KT R1      (1620x1080 4.5")</option>
+			</optgroup>
+			<optgroup label="4:3">
+				<option>Trimui Model S (320x240 2.0")</option>
+				<option>Trimui Smart   (320x240 2.4")</option>
+				<option>RG280M     (320x240 2.8")</option>
+				<option selected>Miyoo Mini (640x480 2.8")</option>
+				<option>RG300      (320x240 3.0")</option>
+				<option>RG300X     (640x480 3.0")</option>
+				<option>RG350      (320x240 3.5")</option>
+				<option>RG350M     (640x480 3.5")</option>
+				<option>RG405M     (640x480 4.0")</option>
+			</optgroup>
+			<optgroup label="5:3">
+				<option>Miyoo P60  (800x480 4.0")</option>
+				<option>RG552      (1920x1152 5.36")</option>
+			</optgroup>
+			<optgroup label="16:9">
+				<option>RP3        (1334x750 4.7")</option>
+				<option>Trimui Smart Pro (1280x720 4.96")</option>
+				<option>RGB10 Max  (854x480 5.0")</option>
+				<option>RG503      (960x544 5.0")</option>
+				<option>WIN600     (1280x720 5.94")</option>
+			</optgroup>
+			<optgroup label="Other">
+				<option>Analogue Pocket (1600x1440 3.5")</option>
+				<option>Steam Deck (1280x800 7")</option>
+			</optgroup>
 		</select>
 		<div id="dst_custom">
 			<label><strong>Width</strong> <input id="dst_width" size=4 value=640>px</label>
