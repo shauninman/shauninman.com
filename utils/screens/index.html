@@ -403,6 +403,9 @@ ready(function() {
 	.forceredraw { 
 	   transform: translateZ(0); 
 	}
+	fieldset div {
+		margin-top: 0.5em;
+	}
 </style>
 </head>
 <body>
@@ -428,8 +431,10 @@ ready(function() {
 			<option>PSP              (480x272)</option>
 			<option>Dreamcast        (640x480)</option>
 		</select>
-		<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
-		<label><strong>Crop Overscan</strong> <input id="src_crop" type="checkbox"></label>
+		<div>
+			<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
+			<label><strong>Crop Overscan</strong> <input id="src_crop" type="checkbox"></label>
+		</div>
 		<div id="src_custom">
 			<label><strong>Width</strong> <input id="src_width" size=4 value=240>px</label>
 			<label><strong>Height</strong> <input id="src_height" size=4 value=160>px</label>
