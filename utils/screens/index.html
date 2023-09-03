@@ -414,23 +414,27 @@ ready(function() {
 		<legend>Console</legend>
 		<select id="src_screen">
 			<option>Custom</option>
-			<option>Pokémon mini     (96x64)</option>
-			<option>Lynx             (160x102)</option>
-			<option>Game Boy/Game Gear (160x144)</option>
-			<option>Neo Geo Pocket   (160x152)</option>
-			<option>WonderSwan       (224x144)</option>
-			<option selected>Game Boy Advance (240x160)</option>
-			<option>Virtual Boy      (384x224)</option>
-			<option>Nintendo DS □    (256x192)</option>
-			<option>Nintendo DS ◫    (512x192)</option>
-			<option>Nintendo DS ⊟    (256x384)</option>
-			<option>PSP              (480x272)</option>
-			<option>Nintendo         (256x240)</option>
-			<option>Genesis          (320x224)</option>
-			<option>Super Nintendo   (256x224)</option>
-			<option>PlayStation      (320x240)</option>
-			<option>Nintendo 64      (320x240)</option>
-			<option>Dreamcast        (640x480)</option>
+			<optgroup label="Handhelds">
+				<option>Pokémon mini     (96x64)</option>
+				<option>Lynx             (160x102)</option>
+				<option>Game Boy/Game Gear (160x144)</option>
+				<option>Neo Geo Pocket   (160x152)</option>
+				<option>WonderSwan       (224x144)</option>
+				<option selected>Game Boy Advance (240x160)</option>
+				<option>Virtual Boy      (384x224)</option>
+				<option>Nintendo DS □    (256x192)</option>
+				<option>Nintendo DS ◫    (512x192)</option>
+				<option>Nintendo DS ⊟    (256x384)</option>
+				<option>PSP              (480x272)</option>
+			</optgroup>
+			<optgroup label="Home Consoles">
+				<option>Nintendo         (256x240)</option>
+				<option>Genesis          (320x224)</option>
+				<option>Super Nintendo   (256x224)</option>
+				<option>PlayStation      (320x240)</option>
+				<option>Nintendo 64      (320x240)</option>
+				<option>Dreamcast        (640x480)</option>
+			</optgroup>
 		</select>
 		<div>
 			<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
