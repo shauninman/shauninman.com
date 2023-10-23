@@ -344,6 +344,20 @@ ready(function() {
 			changeDst();
 		}
 	})  
+	
+	function resizePair() {
+		var original = one('div.wrap')
+		var iframes = all('iframe');
+		for (var i=0; i<iframes.length; i++) {
+			var iframe = iframes[i];
+			iframe.width = original.offsetWidth + 16; // iframe.contentWindow.document.body.scrollWidth;
+			iframe.height = original.offsetHeight + 16; //iframe.contentWindow.document.body.scrollHeight;
+		}
+	}
+	// resizePair();
+	// setInterval(resizePair, 1000);
+	// TODO: add iframe to right to compare
+	// TODO: interframe communication to sync src select and updating size in parent
 })
 </script>
 <style>
@@ -351,6 +365,8 @@ ready(function() {
 		margin: 0 1em;
 		font-family: sans-serif;
 		font-size: 16px;
+	}
+	.wrap {
 		float: left;
 	}
 	fieldset {
@@ -407,101 +423,114 @@ ready(function() {
 	fieldset div {
 		margin-top: 0.5em;
 	}
+	iframe {
+		border: none;
+		overflow: hidden;
+	}
 </style>
 </head>
 <body>
-	<fieldset>
-		<legend>Console</legend>
-		<select id="src_screen">
-			<option>Custom</option>
-			<optgroup label="Handhelds">
-				<option>Pokémon mini     (96x64)</option>
-				<option>Lynx             (160x102)</option>
-				<option>Game Boy/Game Gear (160x144)</option>
-				<option>Neo Geo Pocket   (160x152)</option>
-				<option>WonderSwan       (224x144)</option>
-				<option selected>Game Boy Advance (240x160)</option>
-				<option>Nintendo DS □    (256x192)</option>
-				<option>Nintendo DS ◫    (512x192)</option>
-				<option>Nintendo DS ⊟    (256x384)</option>
-				<option>PSP              (480x272)</option>
-			</optgroup>
-			<optgroup label="Home Consoles">
-				<option>Nintendo         (256x240)</option>
-				<option>Genesis          (320x224)</option>
-				<option>Super Nintendo   (256x224)</option>
-				<option>PlayStation      (320x240)</option>
-				<option>Nintendo 64      (320x240)</option>
-				<option>Dreamcast        (640x480)</option>
-			</optgroup>
-			<optgroup label="Other">
-				<option>PICO-8           (128x128)</option>
-				<option>Virtual Boy      (384x224)</option>
-			</optgroup>
-		</select>
-		<div>
-			<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
-			<label><strong>Crop Overscan</strong> <input id="src_crop" type="checkbox"></label>
-		</div>
-		<div id="src_custom">
-			<label><strong>Width</strong> <input id="src_width" size=4 value=240>px</label>
-			<label><strong>Height</strong> <input id="src_height" size=4 value=160>px</label>
-		</div>
-	</fieldset>
-	<fieldset>
-		<legend>Screen</legend>
-		<select id="dst_screen">
-			<option>Custom</option>
-			<optgroup label="1:1">
-				<option>FunKey S   (240x240 1.54")</option>
-				<option>Retro Pixel Pocket (720x720 3.1")</option>
-				<option>RGB30      (720x720 4.0")</option>
-			</optgroup>
-			<optgroup label="3:2">
-				<option>RS-90      (240x160 2.0")</option>
-				<option>RG351      (480x320 3.5")</option>
-				<option>KT R1      (1620x1080 4.5")</option>
-			</optgroup>
-			<optgroup label="4:3">
-				<option>Trimui Model S (320x240 2.0")</option>
-				<option>Trimui Smart   (320x240 2.4")</option>
-				<option>RG280M     (320x240 2.8")</option>
-				<option selected>Miyoo Mini (640x480 2.8")</option>
-				<option>RG300      (320x240 3.0")</option>
-				<option>RG300X     (640x480 3.0")</option>
-				<option>RG350      (320x240 3.5")</option>
-				<option>RG350M     (640x480 3.5")</option>
-				<option>RG405M     (640x480 4.0")</option>
-			</optgroup>
-			<optgroup label="5:3">
-				<option>Miyoo P60  (800x480 4.0")</option>
-				<option>RG552      (1920x1152 5.36")</option>
-			</optgroup>
-			<optgroup label="16:9">
-				<option>RP3        (1334x750 4.7")</option>
-				<option>Trimui Smart Pro (1280x720 4.96")</option>
-				<option>RGB10 Max  (854x480 5.0")</option>
-				<option>RG503      (960x544 5.0")</option>
-				<option>WIN600     (1280x720 5.94")</option>
-			</optgroup>
-			<optgroup label="Other">
-				<option>Analogue Pocket (1600x1440 3.5")</option>
-				<option>Steam Deck (1280x800 7")</option>
-			</optgroup>
-		</select>
-		<div id="dst_custom">
-			<label><strong>Width</strong> <input id="dst_width" size=4 value=640>px</label>
-			<label><strong>Height</strong> <input id="dst_height" size=4 value=480>px</label>
-			<label><strong>Size</strong> <input id="dst_size" size=4 value=2.8>in</label>
-		</div>
-	</fieldset>
+	<div class="wrap">
+		<fieldset>
+			<legend>Console</legend>
+			<select id="src_screen">
+				<option>Custom</option>
+				<optgroup label="Handhelds">
+					<option>Pokémon mini     (96x64)</option>
+					<option>Lynx             (160x102)</option>
+					<option>Game Boy/Game Gear (160x144)</option>
+					<option>Neo Geo Pocket   (160x152)</option>
+					<option>WonderSwan       (224x144)</option>
+					<option selected>Game Boy Advance (240x160)</option>
+					<option>Nintendo DS □    (256x192)</option>
+					<option>Nintendo DS ◫    (512x192)</option>
+					<option>Nintendo DS ⊟    (256x384)</option>
+					<option>PSP              (480x272)</option>
+				</optgroup>
+				<optgroup label="Home Consoles">
+					<option>Nintendo         (256x240)</option>
+					<option>Genesis          (320x224)</option>
+					<option>Super Nintendo   (256x224)</option>
+					<option>PlayStation      (320x240)</option>
+					<option>Nintendo 64      (320x240)</option>
+					<option>Dreamcast        (640x480)</option>
+				</optgroup>
+				<optgroup label="Other">
+					<option>PICO-8           (128x128)</option>
+					<option>Virtual Boy      (384x224)</option>
+				</optgroup>
+			</select>
+			<div>
+				<label><strong>Integer scaling</strong> <input id="src_nn" type="checkbox" checked></label>
+				<label><strong>Crop Overscan</strong> <input id="src_crop" type="checkbox"></label>
+			</div>
+			<div id="src_custom">
+				<label><strong>Width</strong> <input id="src_width" size=4 value=240>px</label>
+				<label><strong>Height</strong> <input id="src_height" size=4 value=160>px</label>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend>Screen</legend>
+			<select id="dst_screen">
+				<option>Custom</option>
+				<optgroup label="1:1">
+					<option>FunKey S   (240x240 1.54")</option>
+					<option>Retro Pixel Pocket (720x720 3.1")</option>
+					<option>RGB30      (720x720 4.0")</option>
+				</optgroup>
+				<optgroup label="3:2">
+					<option>RS-90      (240x160 2.0")</option>
+					<option>RG351      (480x320 3.5")</option>
+					<option>KT R1      (1620x1080 4.5")</option>
+				</optgroup>
+				<optgroup label="4:3">
+					<option>Trimui Model S (320x240 2.0")</option>
+					<option>Trimui Smart   (320x240 2.4")</option>
+					<option>RG280M     (320x240 2.8")</option>
+					<option selected>Miyoo Mini (640x480 2.8")</option>
+					<option>RG300      (320x240 3.0")</option>
+					<option>RG300X     (640x480 3.0")</option>
+					<option>RG350      (320x240 3.5")</option>
+					<option>RG350M     (640x480 3.5")</option>
+					<option>RG405M     (640x480 4.0")</option>
+				</optgroup>
+				<optgroup label="5:3">
+					<option>Miyoo P60  (800x480 4.0")</option>
+					<option>RG552      (1920x1152 5.36")</option>
+				</optgroup>
+				<optgroup label="16:9">
+					<option>M17        (480x272 4.3")</option>
+					<option>RP3        (1334x750 4.7")</option>
+					<option>Trimui Smart Pro (1280x720 4.96")</option>
+					<option>RGB10 Max  (854x480 5.0")</option>
+					<option>RG503      (960x544 5.0")</option>
+					<option>WIN600     (1280x720 5.94")</option>
+				</optgroup>
+				<optgroup label="Other">
+					<option>Analogue Pocket (1600x1440 3.5")</option>
+					<option>Steam Deck (1280x800 7")</option>
+				</optgroup>
+			</select>
+			<div id="dst_custom">
+				<label><strong>Width</strong> <input id="dst_width" size=4 value=640>px</label>
+				<label><strong>Height</strong> <input id="dst_height" size=4 value=480>px</label>
+				<label><strong>Size</strong> <input id="dst_size" size=4 value=2.8>in</label>
+			</div>
+		</fieldset>
 
-	<div id="dst" class="forceredraw">
-		<div id="src" class="forceredraw">
-			<div id="scale" class="forceredraw"></div>
+		<div id="dst" class="forceredraw">
+			<div id="src" class="forceredraw">
+				<div id="scale" class="forceredraw"></div>
+			</div>
 		</div>
+
+		<a href="./">Reset</a> or <a id="share" href="./">Share this combination</a>
 	</div>
-
-	<a href="./">Reset</a> or <a id="share" href="./">Share this combination</a>
+	<!-- <div class="wrap">
+		<iframe src="./index.html" scrolling="no"></iframe>
+	</div>
+	<div class="wrap">
+		<iframe src="./index.html" scrolling="no"></iframe>
+	</div> -->
 </body>
 </html>
