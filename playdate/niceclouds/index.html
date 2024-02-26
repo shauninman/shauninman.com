@@ -3,6 +3,7 @@
 <head>
 <title>A Nice Clouds Record</title>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
 body {
 	background-color: black;
@@ -10,12 +11,8 @@ body {
 	padding: 0;
 }
 
-#record {
-	margin: 32px auto;
-	width: 400px;
-}
-
 img,canvas {
+	margin: 32px auto;
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: -moz-crisp-edges;
 	-ms-interpolation-mode: nearest-neighbor;
@@ -24,7 +21,7 @@ img,canvas {
 </style>
 </head>
 <body>
-<div id=record><b class=playdate><i></i></b></div>
+<div id=record></div>
 <script>
 let Color = {
 	White:0,
@@ -197,10 +194,9 @@ function render() {
 		context.fillRect(0,0,screenWidth,screenHeight);
 	context.globalCompositeOperation = DrawMode.Copy;
 	
-	let record = document.querySelector('#record i');
 	let image = document.createElement('img');
 	image.src = canvas.toDataURL();
-	record.appendChild(image);
+	document.body.appendChild(image);
 }
 
 Assets.ready = function() {
