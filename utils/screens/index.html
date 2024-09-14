@@ -181,7 +181,7 @@ function recalc() {
 		
 	var scl = one('#scale');
 	var html = ''
-	if (sub_inch_diagonal.toFixed(1)>0) html += `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`
+	if (sub_inch_diagonal.toFixed(1)>0) html += `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`;
 	if (cropped && (inch_ox<0 || inch_oy<0)) {
 		var ox = (pixel_width-scaled_pixel_width) / 2
 		var oy = (pixel_height-scaled_pixel_height) / 2
@@ -204,6 +204,9 @@ function recalc() {
 	dst.innerHTML += ' ';
 	src.innerHTML += ' ';
 	scl.innerHTML += ' ';
+	
+	var ppi = Math.floor(pixel_diagonal / inch_diagonal);
+	one('#ppi').innerHTML = `${ppi}ppi`;
 }
 
 ready(function() {
@@ -519,6 +522,7 @@ ready(function() {
 				<label><strong>Height</strong> <input id="dst_height" size=4 value=480>px</label>
 				<label><strong>Size</strong> <input id="dst_size" size=4 value=2.8>in</label>
 			</div>
+			<div id="ppi"></div>
 		</fieldset>
 
 		<div id="dst" class="forceredraw">
