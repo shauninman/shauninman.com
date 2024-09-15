@@ -121,18 +121,7 @@ function clone(obj) {
 </script>
 <script type="text/javascript">
 
-function recalc() {
-	// dst screen
-	var pixel_width = parseInt(one('#dst_width').value)
-	var pixel_height = parseInt(one('#dst_height').value)
-	var inch_diagonal = parseFloat(one('#dst_size').value)
-
-	// src screen
-	var sub_pixel_width = parseInt(one('#src_width').value)
-	var sub_pixel_height = parseInt(one('#src_height').value)
-	var integer_scaling = one('#src_nn').checked
-	var cropped = one('#src_crop').checked
-
+function updateUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pixel_height, integer_scaling,cropped,console_name) {
 	if (isNaN(pixel_width) || isNaN(pixel_height) || isNaN(inch_diagonal) || isNaN(sub_pixel_width) || isNaN(sub_pixel_height)) return;
 	if (pixel_width==0 || pixel_height==0 || inch_diagonal==0 || sub_pixel_width==0 || sub_pixel_height==0) return;
 
@@ -166,11 +155,28 @@ function recalc() {
 	// print(`${sub_pixel_width}x${sub_pixel_height}@${sub_scale}x ${sub_inch_diagonal.toFixed(1)}" (${sub_inch_width.toFixed(1)}"x${sub_inch_height.toFixed(1)}")`)
 
 	// NOTE: CSS inches do not equal on screen inches :weary: might as well just set pixels
-	var dst = one('#dst')
+	var unit = document.createElement('div');
+	var hed = document.createElement('div');
+	var dst = document.createElement('div');
+	var src = document.createElement('div');
+	var scl = document.createElement('div');
+	unit.className = 'unit';
+	hed.className = 'head';
+	dst.className = 'dst';
+	src.className = 'src';
+	scl.className = 'scale';
+	hed.innerHTML = console_name;
+	src.appendChild(scl);
+	dst.appendChild(src);
+	unit.appendChild(hed);
+	unit.appendChild(dst);
+	preview.appendChild(unit);
+		
+	// var dst = one('#dst')
 	dst.style.width  = inch_width+'in'
 	dst.style.height = inch_height+'in'
 	
-	var src = one('#src')
+	// var src = one('#src')
 	src.style.width  = sub_inch_width+'in'
 	src.style.height = sub_inch_height+'in'
 	
@@ -179,7 +185,7 @@ function recalc() {
 	src.style.top = inch_oy+'in'
 	src.style.left = inch_ox+'in'
 		
-	var scl = one('#scale');
+	// var scl = one('#scale');
 	var html = ''
 	if (sub_inch_diagonal.toFixed(1)>0) html += `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`;
 	if (cropped && (inch_ox<0 || inch_oy<0)) {
@@ -192,18 +198,44 @@ function recalc() {
 		if (ox!=0 || oy!=0) html += `<br>(cropped: ${ox},${oy})`
 	}
 	scl.innerHTML = html
+}
+function recalc() {
+	// dst screen
+	var pixel_width = parseInt(one('#dst_width').value)
+	var pixel_height = parseInt(one('#dst_height').value)
+	var inch_diagonal = parseFloat(one('#dst_size').value)
+	var pixel_diagonal = Math.sqrt(Math.pow(pixel_width,2) + Math.pow(pixel_height,2))
+	
+	// src screen
+	var sub_pixel_width = parseInt(one('#src_width').value)
+	var sub_pixel_height = parseInt(one('#src_height').value)
+	var integer_scaling = one('#src_nn').checked
+	var cropped = one('#src_crop').checked
+	var show_all = one('#show_all').checked
+	var console_name = one('#src_screen').value
+
+	var preview = one('#preview');
+	preview.innerHTML = '';
+
+	if (show_all) {
+		var src = one('#src_screen');
+		for (var i=0; i<src.length; i++) {
+			var value = src[i].value;
+			if (value=='Custom') continue;
+			
+			var m = value.match(/\(([0-9]+)x([0-9]+)\)/)
+			updateUnit(pixel_width,pixel_height,inch_diagonal, m[1],m[2], integer_scaling,cropped,value);
+		}
+	}
+	else {
+		updateUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pixel_height, integer_scaling,cropped,console_name);
+	}
 	
 	var hash = {};
 	each('input,select', function(i,node) {
 		hash[node.id] = node.tagName=='SELECT' ? parseInt(node.selectedIndex) : node.type=='checkbox' ? (node.checked?1:0) : parseFloat(node.value);
 	})
-	one('#share').href=`./#${JSON.stringify(hash).replace(/["\{\}]/g,'')}`
-	
-	// NOTE: Safari Version 15.3 (17612.4.9.1.8) doesn't redraw properly after changing console 
-	// seems like updating the innerHTML and adding transform: translateZ(0); forces a redraw
-	dst.innerHTML += ' ';
-	src.innerHTML += ' ';
-	scl.innerHTML += ' ';
+	one('#share').href=`./#${JSON.stringify(hash).replace(/["\{\}]/g,'')}`;
 	
 	var ppi = Math.floor(pixel_diagonal / inch_diagonal);
 	one('#ppi').innerHTML = `${ppi}ppi`;
@@ -311,6 +343,8 @@ ready(function() {
 		var src = one('#src_screen');
 		var value = src.value;
 		if (value=='Custom') {
+			one('#show_all').checked = false
+			recalc()
 			one('#src_custom').classList.add('custom')
 			return
 		}
@@ -370,12 +404,13 @@ ready(function() {
 		font-size: 16px;
 	}
 	.wrap {
-		float: left;
+/*		float: left;*/
 	}
 	fieldset {
 		border: 2px solid lightgray;
 		border-radius: 4px;
-		margin: 1em auto;
+		margin: 0.5em 0.5em 0 0;
+		display: inline-block;
 	}
 	legend {
 		font-weight: bold;
@@ -383,17 +418,27 @@ ready(function() {
 	strong {
 		margin-left: 8px;
 	}
-	#dst {
+	#preview {
 		margin: 1em 0;
+	}
+	.unit {
+		display: inline-block;
+		margin: 0 1em 1em 0;
+	}
+	.head {
+		font-weight: bold;
+		margin: 0 0 0.5em;
+	}
+	.dst {
 		background-color: black;
 		position: relative;
 	}
-	#src {
+	.src {
 		position: absolute;
 		background-color: rgba(128,128,128,0.75);
 		display: grid;
 	}
-	#scale {
+	.scale {
 		margin: auto;
 		color: white;
 		white-space: nowrap;
@@ -420,9 +465,6 @@ ready(function() {
 	.custom {
 		display: block !important;
 	}
-	.forceredraw { 
-	   transform: translateZ(0); 
-	}
 	fieldset div {
 		margin-top: 0.5em;
 	}
@@ -433,7 +475,7 @@ ready(function() {
 </style>
 </head>
 <body>
-	<div class="wrap">
+	<div>
 		<fieldset>
 			<legend>Console</legend>
 			<select id="src_screen">
@@ -522,22 +564,14 @@ ready(function() {
 				<label><strong>Height</strong> <input id="dst_height" size=4 value=480>px</label>
 				<label><strong>Size</strong> <input id="dst_size" size=4 value=2.8>in</label>
 			</div>
-			<div id="ppi"></div>
+			<div>
+				<span id="ppi"></span> <label><strong>Show All Consoles</strong> <input id="show_all" type="checkbox"></label>
+			</div>
 		</fieldset>
 
-		<div id="dst" class="forceredraw">
-			<div id="src" class="forceredraw">
-				<div id="scale" class="forceredraw"></div>
-			</div>
-		</div>
+		<div id="preview"></div>
 
 		<a href="./">Reset</a> or <a id="share" href="./">Share this combination</a>
 	</div>
-	<!-- <div class="wrap">
-		<iframe src="./index.html" scrolling="no"></iframe>
-	</div>
-	<div class="wrap">
-		<iframe src="./index.html" scrolling="no"></iframe>
-	</div> -->
 </body>
 </html>
