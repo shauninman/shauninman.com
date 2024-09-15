@@ -342,12 +342,15 @@ ready(function() {
 	function changeSrc() {
 		var src = one('#src_screen');
 		var value = src.value;
+		var show_all = one('#show_all')
 		if (value=='Custom') {
-			one('#show_all').checked = false
+			show_all.checked = false
+			show_all.disabled = true;
 			recalc()
 			one('#src_custom').classList.add('custom')
 			return
 		}
+		show_all.disabled = false;
 		one('#src_custom').classList.remove('custom')
 
 		var m = value.match(/\(([0-9]+)x([0-9]+)\)/)
@@ -404,6 +407,7 @@ ready(function() {
 		border-radius: 4px;
 		margin: 0.5em 0.5em 0 0;
 		display: inline-block;
+		vertical-align: top;
 	}
 	legend {
 		font-weight: bold;
