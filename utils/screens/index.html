@@ -164,11 +164,18 @@ function addUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pix
 	hed.className = 'head';
 	dst.className = 'dst';
 	src.className = 'src';
+	if (!sub_scale) {
+		src.className += ' misfit';
+		sub_inch_width = inch_width;
+		sub_inch_height = inch_height;
+	}
 	scl.className = 'scale';
-	hed.innerHTML = console_name;
 	src.appendChild(scl);
 	dst.appendChild(src);
-	unit.appendChild(hed);
+	if (console_name) {
+		hed.innerHTML = `<strong>${console_name}</strong><br>${sub_pixel_width}x${sub_pixel_height}`;
+		unit.appendChild(hed);
+	}
 	unit.appendChild(dst);
 	preview.appendChild(unit);
 		
@@ -188,6 +195,7 @@ function addUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pix
 	// var scl = one('#scale');
 	var html = ''
 	if (sub_inch_diagonal.toFixed(1)>0) html += `${sub_inch_diagonal.toFixed(1)}" at ${sub_scale%1==0?sub_scale:sub_scale.toFixed(1)}x`;
+	else html += 'insufficient pixels';
 	if (cropped && (inch_ox<0 || inch_oy<0)) {
 		var ox = (pixel_width-scaled_pixel_width) / 2
 		var oy = (pixel_height-scaled_pixel_height) / 2
@@ -223,12 +231,12 @@ function recalc() {
 			var value = src[i].value;
 			if (value=='Custom') continue;
 			
-			var m = value.match(/\(([0-9]+)x([0-9]+)\)/)
-			addUnit(pixel_width,pixel_height,inch_diagonal, m[1],m[2], integer_scaling,cropped,value);
+			var m = value.match(/(.+)\s*\(([0-9]+)x([0-9]+)\)/)
+			addUnit(pixel_width,pixel_height,inch_diagonal, m[2],m[3], integer_scaling,cropped,m[1]);
 		}
 	}
 	else {
-		addUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pixel_height, integer_scaling,cropped,console_name);
+		addUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pixel_height, integer_scaling,cropped);
 	}
 	
 	var hash = {};
@@ -423,8 +431,10 @@ ready(function() {
 		margin: 0 1em 1em 0;
 	}
 	.head {
-		font-weight: bold;
 		margin: 0 0 0.5em;
+	}
+	.head strong {
+		margin: 0;
 	}
 	.dst {
 		background-color: black;
@@ -434,6 +444,9 @@ ready(function() {
 		position: absolute;
 		background-color: rgba(128,128,128,0.75);
 		display: grid;
+	}
+	.src.misfit {
+		background-color: rgba(255,0,0,0.75);
 	}
 	.scale {
 		margin: auto;
