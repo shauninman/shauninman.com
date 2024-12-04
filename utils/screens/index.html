@@ -207,6 +207,7 @@ function addUnit(pixel_width,pixel_height,inch_diagonal, sub_pixel_width,sub_pix
 	}
 	scl.innerHTML = html
 }
+function gcd(a, b) { while (b) { [a, b] = [b, a % b]; } return a; }
 function recalc() {
 	// dst screen
 	var pixel_width = parseInt(one('#dst_width').value)
@@ -245,8 +246,38 @@ function recalc() {
 	})
 	one('#share').href=`./#${JSON.stringify(hash).replace(/["\{\}]/g,'')}`;
 	
+	var aspect_scale = gcd(pixel_width,pixel_height);
+	var aspect_width = pixel_width / aspect_scale;
+	var aspect_height = pixel_height / aspect_scale;
+	
+	if (aspect_width>16 || aspect_height>9) {
+		var size = {w:aspect_width, h:aspect_height};
+		var sizes = [
+			{w:3,h:2},
+			{w:4,h:3},
+			{w:5,h:4},
+			{w:16,h:9},
+			{w:16,h:10},
+			{w:21,h:9},
+		];
+		
+		var best = sizes[0];
+		var best_diff = -1;
+		var ratio = size.w / size.h;
+		for (var i=0; i<sizes.length; i++) {
+			var next = sizes[i];
+			var diff = Math.abs(ratio - (next.w / next.h));
+			if (best_diff==-1 || diff<best_diff) {
+				best_diff = diff;
+				best = next;
+			}
+		}
+		aspect_width = best.w;
+		aspect_height = best.h;
+	}
+	
 	var ppi = Math.floor(pixel_diagonal / inch_diagonal);
-	one('#ppi').innerHTML = `${ppi}ppi`;
+	one('#ppi').innerHTML = `${ppi}ppi (${aspect_width}:${aspect_height})`;
 }
 
 ready(function() {
@@ -542,7 +573,7 @@ ready(function() {
 				<option>Trimui Smart   (320x240 2.4")</option>
 				<option>RG280M     (320x240 2.8")</option>
 				<option>Miyoo Mini (640x480 2.8")</option>
-				<option>Miyoo Mini (v4) (750x560 2.8")</option>
+				<option>Miyoo Mini (v4) (752x560 2.8")</option>
 				<option>RG300      (320x240 3.0")</option>
 				<option>RG300X     (640x480 3.0")</option>
 				<option selected>Trimui Brick (1024x768 3.2")</option>
