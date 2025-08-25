@@ -296,24 +296,26 @@ ready(function() {
 				node.selectedIndex = parseInt(object[key]);
 				if (key.match(/^src_/)) {
 					var n = node.value.match(/\(([0-9]+)x([0-9]+)\)/);
-					var nw = parseFloat(n[1]);
-					var nh = parseFloat(n[2]);
-					var w = object.src_width;
-					var h = object.src_height;
-					if (w!=nw || h!=nh) {
-						var found = false;
-						for (var i=1; i<node.length; i++) {
-							var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\)/);
-							var ow = parseFloat(o[1]);
-							var oh = parseFloat(o[2]);
-							if (ow==w && oh==h) {
-								found = true;
-								node.selectedIndex = i;
-								break;
+					if (n) {
+						var nw = parseFloat(n[1]);
+						var nh = parseFloat(n[2]);
+						var w = object.src_width;
+						var h = object.src_height;
+						if (w!=nw || h!=nh) {
+							var found = false;
+							for (var i=1; i<node.length; i++) {
+								var o = node.options[i].value.match(/\(([0-9]+)x([0-9]+)\)/);
+								var ow = parseFloat(o[1]);
+								var oh = parseFloat(o[2]);
+								if (ow==w && oh==h) {
+									found = true;
+									node.selectedIndex = i;
+									break;
+								}
 							}
-						}
-						if (!found) {
-							node.selectedIndex = 0;
+							if (!found) {
+								node.selectedIndex = 0;
+							}
 						}
 					}
 				}
