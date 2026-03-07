@@ -1,0 +1,546 @@
+*
+{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	list-style: none;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: -moz-crisp-edges;
+	-ms-interpolation-mode: nearest-neighbor;
+}
+html
+{
+	height: 100%;
+	
+}
+@media screen and (max-device-width: 480px)
+{
+	html { -webkit-text-size-adjust: none; }
+}
+body
+{
+	position: relative;
+	background: #000;
+	min-height: 100%;
+	font: 14px/20px Helvetica, Arial, sans-serif;
+	color: #bcbcbc;
+	background: #000 url(../images/radial-gradient.png) 50% -128px no-repeat;
+}
+a
+{
+	color: #62d838;
+	text-decoration: none;
+}
+a:hover
+{
+	text-decoration: underline;
+}
+
+/* COPYRIGHT */
+#copyright
+{
+	font-size: 11px;
+	color: #bcbcbc;
+	padding-bottom: 16px;
+}
+#p1xl
+{
+	display: none;
+}
+.has-flash #p1xl 
+{
+	display: inline;
+}
+
+/* SOUND TEST WIDGET */
+#sound-test
+{
+	position: relative;
+	width: 172px;
+	height: 96px;
+	background: url(../images/sound-test.png) 0 -100px no-repeat;
+	display: none;
+}
+.has-flash #sound-test
+{
+	display: block;
+}
+#nsf-player-container
+{
+	position: absolute;
+	top: 50px;
+	left: 16px;
+	width: 140px;
+	display: none;
+}
+#flashnsf
+{
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+#nsf-player-btns
+{
+	position: relative;
+	z-index: 50;
+	height: 32px;
+	background: url(../images/player-btns.png) 0 0 no-repeat;
+}
+#nsf-player-btns.prev-down { background-position: 0 -32px; }
+#nsf-player-btns.play-down { background-position: 0 -64px; }
+#nsf-player-btns.pause-down { background-position: 0 -96px; }
+#nsf-player-btns.next-down { background-position: 0 -128px; }
+
+#track
+{
+	position: absolute;
+	top: 24px;
+	left: 10px;
+	width: 138px;
+	height: 16px;
+	background: url(../images/tracks.png) 0 0 no-repeat;
+	display: none;
+}
+#track.track-0 { background-position: 0 0; }
+#track.track-1 { background-position: 0 -16px; }
+#track.track-2 { background-position: 0 -32px; }
+#track.track-3 { background-position: 0 -48px; }
+#track.track-4 { background-position: 0 -64px; }
+#track.track-5 { background-position: 0 -80px; }
+#track.track-6 { background-position: 0 -96px; }
+#track.track-7 { background-position: 0 -112px; }
+#track.track-8 { background-position: 0 -128px; }
+#track.track-9 { background-position: 0 -144px; }
+#track.track-10 { background-position: 0 -160px; }
+#track.track-11 { background-position: 0 -176px; }
+
+.has-flash #sound-test
+{
+	background-position: 0 0;
+}
+.has-flash #nsf-player-container,
+.has-flash #track
+{
+	display: block;
+}
+
+/* SHARED */
+.wrap
+{
+	position: relative;
+	width: 406px;
+	margin: 0 auto;
+}
+#page-soundtrack .wrap,
+#content .wrap
+{
+	padding-top: 32px;
+}
+.row
+{
+	position: relative;
+}
+
+#back,
+#download,
+#donate,
+#get-it
+{
+	display: inline-block;
+	height: 40px;
+	text-indent: -9999px;
+}
+#back
+{
+	width: 32px;
+	height: 28px;
+	background: url(../images/back.png) 0 0 no-repeat;
+}
+#download
+{
+	width: 116px;
+	background: url(../images/download.png) 0 0 no-repeat;
+}
+#page-soundtrack #download
+{
+	background-image: url(../images/download-green.png);
+}
+#donate
+{
+	text-indent: 0;
+	width: 90px;
+	background: url(../images/donate.png) 0 0 no-repeat;
+}
+#get-it
+{
+	width: 114px;
+	background: url(../images/get-it.png) 0 0 no-repeat;	
+}
+
+#back:active
+{
+	background-position: 0 -28px;
+}
+#download:active,
+#donate:active,
+#get-it:active
+{
+	background-position: 0 -40px;
+}
+
+#donate input
+{
+	opacity: 0;
+}
+
+/* HOME */
+#soundtrack
+{
+	display: block;
+	width: 128px;
+	height: 164px;
+	text-indent: -9999px;
+	background: url(../images/soundtrack.png) 0 0 no-repeat;
+}
+
+#play-trailer
+{
+	display:block;
+	width: 320px;
+	height: 240px;
+	text-indent: -9999px;
+	background: url(../images/play-trailer.gif) 0 0 no-repeat;
+}
+
+#room
+{
+	position: relative;
+	padding: 0 0 12px;
+	background: url(../images/gears.png) 50% 100% no-repeat;
+}
+#play-trailer
+{
+	position: absolute;
+	top: 64px;
+	left: 34px;
+}
+#room h1
+{
+	margin: 0 0 0 -16px;
+}
+#room h2
+{
+	margin: 20px auto 32px;
+	width: 338px;
+	height: 32px;
+	text-indent: -9999px;
+	background: url(../images/txt-platformer.png) 0 0 no-repeat;
+}
+#get-it
+{
+	display: block;
+	margin: 0 auto;
+}
+
+#icon
+{
+	float: left;
+	margin: 0 12px 0 0;
+}
+p
+{
+	margin: 16px 0;
+}
+.lead
+{
+	color: #fcfcfc;
+}
+.lead strong
+{
+	color: #f8d878;
+}
+#soundtrack
+{
+	float: right;
+	margin: 0 0 0 16px;
+}
+#desc:after
+{
+	display: block;
+	content: '.';
+	height: 0;
+	visibility: hidden;
+	clear: both;
+}
+
+/* DIARY */
+
+#diary
+{
+	margin: 16px 0;
+	position: relative;
+}
+
+#diary a:hover
+{
+	text-decoration: none;
+}
+
+#diary h3,
+#diary p
+{
+	background: url(../images/diary.png) 0 0 no-repeat;
+}
+#diary h3
+{
+	text-indent: -9999px;
+	height: 46px;
+}
+#diary h4
+{
+	display: none;
+}
+#diary p
+{
+	background-position: 0 100%;
+	padding: 0 164px 6px 10px;
+	margin: 0;
+	font-size: 12px;
+	line-height: 18px;
+	color: #fff;
+}
+
+#diary-cover
+{
+	position: absolute;
+	top: 16px;
+	right: 16px;
+}
+
+/* REVIEWS */
+#reviews
+{
+	margin: 16px 0;
+}
+#reviews h3,
+#reviews ul
+{
+	background: url(../images/reviews.png) 0 0 no-repeat;
+}
+#reviews h3
+{
+	text-indent: -9999px;
+	height: 46px;
+}
+#reviews h4
+{
+	display: none;
+}
+#reviews ul
+{
+	background-position: 0 100%;
+	padding: 12px 16px 6px;
+}
+#reviews li
+{
+	font-size: 12px;
+	line-height: 18px;
+	background: url(../images/gear.png) 0 2px no-repeat;
+	padding: 0 0 12px 22px;
+}
+#reviews li:nth-child(odd)
+{
+	color: #fcfcfc;
+}
+#reviews li a
+{
+	white-space: nowrap;
+}
+
+/* WALLPAPERS */
+#wallpapers
+{
+	position: relative;
+	height: 128px;
+	background: url(../images/wallpapers.png) 0 0 no-repeat;
+	margin: 0 0 8px;
+}
+#wallpapers h3
+{
+	display: none;
+}
+#wallpapers .tab
+{
+	display: block;
+	text-indent: -9999px;
+	position: absolute;
+	top: 26px;
+	height: 26px;
+}
+#tab-iphone
+{
+	width: 116px;
+	left: 8px;
+}
+#tab-ipad
+{
+	width: 54px;
+	left: 124px;
+}
+#wallpapers.ipad
+{
+	height: 136px;
+	background-position: 0 -136px;
+}
+#wallpapers ul
+{
+	position: absolute;
+	top: 68px;
+	left: 6px;
+	display: none;
+}
+.iphone ul#wallpapers-iphone,
+.ipad ul#wallpapers-ipad
+{
+	display: block;
+}
+#wallpapers li
+{
+	float: left;
+	margin-left: 12px;
+}
+#wallpapers li a
+{
+	display: block;
+	text-indent: -9999px;
+	padding: 2px;
+}
+/** /
+#wallpapers li a:hover
+{
+	padding: 0;
+	border: 2px solid #fcfcfc;
+}
+/**/
+#wallpapers-iphone li a
+{
+	width: 20px;
+	height: 32px;
+}
+ul#wallpapers-ipad
+{
+	left: 0;
+	width: 280px;
+}
+#wallpapers-ipad li
+{
+	margin-left: 24px;
+}
+#wallpapers-ipad li a
+{
+	width: 28px;
+	height: 40px;
+}
+
+/* TRAILER */
+#trailer 	{ z-index: 3; }
+#curtain 	{ z-index: 2; }
+#content	{ z-index: 1; }
+
+#curtain
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+#curtain
+{
+	display: none;
+	background-color: rgba(0,0,0,0.8);
+}
+#trailer
+{
+	position: relative;
+	display: none;
+}
+#trailer #player-container
+{
+	position: absolute;
+	top: 96px;
+	left: 34px;
+	width: 320px;
+	height: 240px;
+	background: #000;
+}
+
+/* SOUNDTRACK */
+#back
+{
+	position: absolute;
+	top: 44px;
+	left: -48px;
+}
+#page-soundtrack h1
+{
+	margin: 0 -4px 16px;
+}
+#page-soundtrack p
+{
+	font-size: 12px;
+	line-height: 18px;
+}
+#page-soundtrack h2
+{
+	width: 110px;
+	height: 10px;
+	text-indent: -9999px;
+	background: url(../images/txt-rocket-out.png) 0 0 no-repeat;
+}
+#donate
+{
+	cursor: pointer;
+}
+p#no-thanks
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	line-height: 40px;
+}
+#no-thanks #download
+{
+	margin-left: 8px;
+}
+#sound-test
+{
+	float: right;
+	margin: 0 0 12px 16px;
+}
+
+/* THANKS */
+#page-thanks
+{
+	background-position: 50% -284px;
+	text-align: center;
+}
+#page-thanks .wrap
+{
+	padding-top: 108px;
+}
+#page-thanks #download
+{
+	margin-top: 16px;
+}
+
+.game-center
+{
+	display: inline-block;
+	background: url(../images/game-center.png) 0 50% no-repeat;
+	padding: 0 0 0 20px;
+}

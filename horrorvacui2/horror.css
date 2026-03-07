@@ -1,0 +1,438 @@
+html,body,h1,h2,h3,h4,h5,h6,p,a,ul,li,form,input,button,img,strong,em,hr { margin:0; padding:0; border:none; list-style:none; font-size:1.0em; font-family:sans-serif; font-weight:inherit; font-style:inherit; color:inherit; background-color:transparent; text-decoration:none; }
+*:focus{outline:none;}
+
+/* ------------------------------------------------------------------------- */
+
+html,
+body
+{
+	min-height: 100%;
+}
+
+body
+{
+	position:relative;
+	background-color: #000;
+	color: #bcbcbc;
+	font-size: 12px;
+	line-height: 18px;
+	font-weight: bold;
+	-webkit-text-stroke: 1px transparent;
+}
+
+em
+{
+	color: #fff;
+}
+
+strong
+{
+	color: #f7ba00;
+}
+
+li
+{
+	padding-left: 12px;
+	background: url(images/bullet-f54000.png) 0 7px no-repeat;
+}
+li:nth-child(odd)
+{
+	color: #fff;
+}
+
+#tactics h3
+{
+	color: #f54000;
+}
+
+#new h3
+{
+	color: #2be7d7;
+}
+
+#new li
+{
+	background-image: url(images/bullet-2be7d7.png);
+}
+
+h3
+{
+	font-size: 16px;
+}
+
+hr
+{
+	margin: 16px 0;
+	height: 2px;
+	background-color: #004058;
+	clear: both;
+}
+
+#copyright
+{
+	font-size: 10px;
+}
+
+#copyright a
+{
+	color: #2be7d7;
+}
+
+#copyright a:hover
+{
+	text-decoration: underline;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.has-bubble
+{
+	position: relative;
+}
+
+.bubble
+{
+	position: absolute;
+	top: -12px;
+	right: 20px;
+}
+
+.bubble.now
+{
+	right: 24px;
+}
+
+h1,
+#app-store,
+#app-store-mac,
+#to-go,
+#for-mac,
+#coming-soon h4,
+#signup,
+.bubble
+{
+	display: block;
+	text-indent: -9999px;
+}
+h2 { display: none; }
+
+h1
+{
+	width: 418px;
+	height: 62px;
+	background-image: url(images/logo.png);
+}
+
+#app-store
+{
+	width: 152px;
+	height: 52px;
+	background-image: url(images/app-store.png);
+}
+
+#app-store-mac
+{
+	width: 176px;
+	height: 52px;
+	background-image: url(images/app-store-mac.png);
+/*	opacity: 0.5;*/
+}
+
+#app-store:hover,
+#app-store-mac:hover
+{
+	background-position: 0 -54px;
+}
+
+#to-go
+{
+	width: 180px;
+	height: 78px;
+	background-image: url(images/to-go.png);
+}
+
+#for-mac
+{
+	width: 180px;
+	height: 78px;
+	background-image: url(images/for-mac.png);
+/*	opacity: 0.5;*/
+}
+
+#to-go:hover,
+#for-mac:hover
+{
+	background-position: 0 -80px;
+}
+
+#coming-soon h4
+{
+	width: 228px;
+	height: 26px;
+	background-image: url(images/text-coming-soon-for-mac.png);
+}
+
+#signup
+{
+	width: 114px;
+	height: 46px;
+	background-image: url(images/signup.png);
+}
+
+.bubble.now
+{
+	width: 34px;
+	height: 20px;
+	background-image: url(images/text-now.png);
+}
+
+.bubble.soon
+{
+	width: 38px;
+	height: 20px;
+	background-image: url(images/text-soon.png);
+}
+
+/* ------------------------------------------------------------------------- */
+
+#device
+{
+	width: 480px;
+	height: 320px;
+	padding: 98px 192px 100px;
+	margin: 0 -60px;
+	background-position: 0 0;
+	background-repeat: no-repeat;
+}
+
+.iphone #device { background-image: url(images/device-iphone.png); }
+.ipod #device { background-image: url(images/device-ipod.png); }
+.ipad #device { background-image: url(images/device-ipad.png); }
+.macbook #device { background-image: url(images/device-macbook.png); }
+
+#devices span
+{
+	display: inline-block;
+	height: 52px;
+	background-repeat: no-repeat;
+	background-image: url(images/devices.png);
+}
+
+#devices span:hover
+{
+	cursor: pointer;
+}
+
+#iphone { width: 44px; background-position: 0 0; }
+#ipod { width: 44px; background-position: -46px 0; }
+#ipad { width: 64px; background-position: -92px 0; }
+#macbook { width: 90px; background-position: -158px 0; }
+
+#iphone:hover { background-position: 0 -54px; }
+#ipod:hover { background-position: -46px -54px; }
+#ipad:hover { background-position: -92px -54px; }
+#macbook:hover { background-position: -158px -54px; }
+
+.iphone #iphone { background-position: 0 -108px; }
+.ipod #ipod { background-position: -46px -108px; }
+.ipad #ipad { background-position: -92px -108px; }
+.macbook #macbook { background-position: -158px -108px; }
+
+.iphone #iphone:hover,
+.ipod #ipod:hover,
+.ipad #ipad:hover,
+.macbook #macbook:hover { cursor: default; }
+
+/* ------------------------------------------------------------------------- */
+
+#email
+{
+	display: inline-block;
+	padding: 6px;
+	width: 254px;
+	height: 22px;
+	line-height: 22px;
+	background-image: url(images/input.png);
+	color: #2be7d7;
+}
+
+#email:focus
+{
+	outline: none;
+}
+
+#signup:hover
+{
+	cursor: pointer;
+	background-position: 0 -48px;
+}
+
+/* ------------------------------------------------------------------------- */
+
+#content
+{
+	position: relative;
+	z-index: 100;
+	width: 744px;
+	margin: 0 auto;
+}
+
+#masthead
+{
+	padding: 32px 0 0;
+	margin: 0 0 32px;
+}
+
+#preview
+{
+	position: relative;
+	margin: 32px auto 44px;
+}
+
+#masthead h1
+{
+	margin: 0 auto;
+}
+
+#app-store
+{
+	position: absolute;
+	top: 30px;
+	left: -32px;
+}
+
+#app-store-mac
+{
+	position: absolute;
+	top: 30px;
+	right: -56px;
+}
+
+#devices
+{
+	margin: 32px auto;
+	width: 322px;	
+}
+
+#iphone, #ipod
+{
+	margin: 0 12px;
+}
+
+#ipad
+{
+	margin: 0 12px;
+}
+
+#macbook
+{
+	margin: 0 4px;
+}
+
+#to-go
+{
+	position: absolute;
+	bottom: -18px;
+	left: -12px;
+}
+
+#for-mac
+{
+	position: absolute;
+	bottom: -18px;
+	right: -12px;
+}
+
+#intro
+{
+	width: 230px;
+	margin: 0 44px 0 0;
+}
+
+#icon
+{
+	float: left;
+	margin: 0 10px 0 -8px;
+	position: relative;
+	top: 0;
+}
+
+p
+{
+	margin: 0 0 18px;
+}
+
+#tactics
+{
+	width: 212px;
+	margin: 0 44px 0 0;
+}
+
+#new
+{
+	width: 202px;
+}
+
+#intro,
+#tactics,
+#new
+{
+	float: left;
+}
+
+
+#coming-soon 
+{
+	position: relative;
+}
+
+#coming-soon p
+{
+	width: 332px;
+}
+
+form
+{
+	position: absolute;
+	top: 36px;
+	left: 356px;
+}
+
+#signup
+{
+	position: absolute;
+	top: -6px;
+	left: 276px;
+}
+
+#copyright
+{
+	padding: 0 0 32px;
+}
+
+/* ------------------------------------------------------------------------- */
+
+.space
+{
+	position:absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-attachment: fixed !important;
+}
+
+#space-front
+{
+	background: url(images/space-front.png) 50% 0 repeat;	
+}
+
+#space-mid
+{
+	background: url(images/space-mid.png) 50% 0 repeat;
+}
+
+#space-back
+{
+	background: url(images/space-back.png) 50% 0 repeat;
+}
